@@ -33,12 +33,13 @@ class EzShipGatewayFactory extends GatewayFactory
 
         if (false == $config['payum.api']) {
             $config['payum.default_options'] = [
-                'suID' => null,
+                'su_id' => null,
+                'method' => 'XML',
                 'sandbox' => false,
             ];
 
             $config->defaults($config['payum.default_options']);
-            $config['payum.required_options'] = ['suID'];
+            $config['payum.required_options'] = ['su_id'];
 
             $config['payum.api'] = function (ArrayObject $config) {
                 $config->validateNotEmpty($config['payum.required_options']);

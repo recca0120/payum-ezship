@@ -7,6 +7,33 @@ use Payum\Core\HttpClientInterface;
 
 class Api
 {
+    protected $keyMap = [
+        'su_id' => 'suID',
+        'order_id' => 'orderID',
+        'order_status' => 'orderStatus',
+        'order_type' => 'orderType',
+        'order_amount' => 'orderAmount',
+        'rv_name' => 'rvName',
+        'rv_email' => 'rvEmail',
+        'rv_mobile' => 'rvMobile',
+        'st_cate' => 'stCate',
+        'st_code' => 'stCode',
+        'rv_addr' => 'rvAddr',
+        'rv_zip' => 'rvZip',
+        'rtn_url' => 'rtURL',
+        'web_para' => 'webPara',
+        // Product
+        'detail' => 'Detail',
+        'prod_item' => 'prodItem',
+        'prod_no' => 'prodNo',
+        'prod_name' => 'prodName',
+        'prod_price' => 'prodPrice',
+        'prod_qty' => 'prodQty',
+        'prod_spec' => 'prodSpec',
+
+        'process_id' => 'processID',
+    ];
+
     /**
      * @var HttpClientInterface
      */
@@ -41,30 +68,40 @@ class Api
      */
     public function getApiEndpoint($type = 'capture')
     {
+        // 網站至ezShip 程式網址：
         $endpoints = [
             'cvs' => ' https://map.ezship.com.tw/ezship_map_web.jsp',
-            'capture' => 'https://www.ezship.com.tw/emap/ezship_xml_order_api.jsp',
+            'capture' => strtolower($this->options['method']) === 'xml' ?
+                'https://www.ezship.com.tw/emap/ezship_xml_order_api.jsp' :
+                'https://www.ezship.com.tw/emap/ezship_request_order_api.jsp',
             'query' => 'https://www.ezship.com.tw/emap/ezship_request_order_status_api.jsp',
         ];
 
         return $endpoints[$type];
     }
 
+    /**
+     * createCvsTransaction.
+     *
+     * @param  array  $params
+     *
+     * @return array
+     */
     public function createCvsTransaction(array $params)
     {
         $supportedParams = [
             // varchar 100 賣家登入ezShip帳號 需開通網站對接者
-            'suID' => $this->options['suID'],
+            'su_id' => $this->options['su_id'],
             // varchar 10 處理序號或訂單編號 由開通網站自行提供的編號(KEY值)。(非 ezShip 提供)
-            'processID' => null,
+            'process_id' => null,
             // varchar 3 取件門市通路代號
-            'stCate' => null,
+            'st_cate' => null,
             // varchar 6 取件門市代號
-            'stCode' => null,
+            'st_code' => null,
             // varchar 100 回傳網址路徑及程式名稱 請輸入完整網站路徑網址。如 http://yourdomain.domain/direct/program.php
-            'rtURL' => null,
+            'rtn_url' => null,
             // varchar 100 網站所需額外判別資料 由開通網站自行提供，ezShip 將原值回傳
-            'webPara' => null,
+            'web_para' => uniqid(),
         ];
 
         $params = array_filter(array_replace(
@@ -72,7 +109,7 @@ class Api
             array_intersect_key($params, $supportedParams)
         ));
 
-        return $params;
+        return $this->keyMap($params);
     }
 
     /**
@@ -84,23 +121,19 @@ class Api
      */
     public function createTransaction(array $params)
     {
-        if (empty($params['orderAmount']) === true) {
+        $params = $this->keyMap($params, true);
+
+        if (empty($params['order_amount']) === true) {
             return $this->createCvsTransaction($params);
         }
 
-        $orderStatus = empty($params['stCode']) === false ? 'A01' : 'A05';
-        $details = '';
-        if (isset($params['details']) === true) {
-            $details = implode('', array_map(function ($detail) {
-                return $this->createXml(['Detail' => $detail], ['prodName', 'prodSpec']);
-            }, $params['details']));
-        }
+        $orderStatus = empty($params['st_code']) === false ? 'A01' : 'A05';
 
         $supportedParams = [
             // varchar 100 賣家登入ezShip帳號 需開通網站對接者，取貨付款訂單須帳號於合約期間內
-            'suID' => $this->options['suID'],
+            'su_id' => $this->options['su_id'],
             // varchar 10 訂單編號
-            'orderID' => null,
+            'order_id' => null,
             // varchar 3 訂單狀態
             // A01 超商取貨新訂單，不需在ezShip上確認訂單，可直接印單 (回覆snID)
             // A02 超商取貨新訂單，需在ezShip上確認訂單，確認後才可進行印單 (預設值, 回覆snID)
@@ -108,32 +141,34 @@ class Api
             // A04 超商取貨新訂單，使用 輕鬆袋或迷你袋 (不回覆snID，需在ezShip上確認訂單，需登錄編號)
             // A05 宅配新訂單，不需在ezShip上確認訂單，可直接印單 (回覆snID，10碼數字)
             // A06 宅配新訂單，需在ezShip上確認訂單，確認後才可進行印單 (回覆snID，10碼數字)
-            'orderStatus' => $orderStatus,
+            'order_status' => $orderStatus,
             // varchar 1 訂單類別 1 取貨付款 3 取貨不付款
-            'orderType' => '1',
+            'order_type' => '3',
             // 代收金額或訂單金額
             // 若<orderType>=1，為代收金額 10~6,000
             // 若<orderType>=3，為訂單金額 0~2,000
-            'orderAmount' => null,
+            'order_amount' => null,
             // varchar 60 取件人姓名
             // 若<orderType>=1，建議為取件人身分證件上之真實姓名
             // 若<orderType>=3，須為取件人身分證件上之真實姓名
-            'rvName' => null,
+            'rv_name' => null,
             // varchar 100 取件人電子郵件 發送取件通知信函
-            'rvEmail' => null,
+            'rv_email' => null,
             // varchar 10 取件人行動電話 發送取件通知簡訊
-            'rvMobile' => null,
+            'rv_mobile' => null,
             // varchar 9 取件門市
             // 通路別+門市代號 電子地圖回傳之 <stCate><stCode> orderStatus 為 A01、A02、A03、A04 時必須 ( 店到店資料 )
-            'stCode' => null,
+            'st_code' => null,
             // varchar 120 取件人收件地址 orderStatus 為 A05、A06 時必須 ( 宅配資料 )
-            'rvAddr' => null,
+            'rv_addr' => null,
             // varchar 10 取件人郵遞區號 orderStatus 為 A05、A06 時必須 ( 宅配資料 )
-            'rvZip' => null,
+            'rv_zip' => null,
             // varchar 100 回傳網址路徑及程式名稱 請輸入完整網站路徑網址。如 http://yourdomain.domain/direct/program.php
-            'rtURL' => null,
+            'rtn_url' => null,
             // varchar 100 網站所需額外判別資料 ezShip 將原值回傳，供網站判別用
-            'webPara' => null,
+            'web_para' => uniqid(),
+            // 商品明細
+            'details' => [],
         ];
 
         $params = array_filter(array_replace(
@@ -141,9 +176,22 @@ class Api
             array_intersect_key($params, $supportedParams)
         ));
 
-        return [
-            'web_map_xml' => '<ORDER>'.$this->createXml($params, ['rvName', 'rvAddr']).$details.'</ORDER>',
-        ];
+        $params['order_amount'] = (string) $params['order_type'] === '3' ? '0' : $params['order_amount'];
+
+        $details = $params['details'];
+        unset($params['details']);
+
+        if (strtolower($this->options['method']) === 'xml') {
+            $details = implode('', array_map(function ($detail) {
+                return $this->createXml($this->keyMap(['detail' => $detail]), ['prodName', 'prodSpec']);
+            }, $details));
+
+            return [
+                'web_map_xml' => '<ORDER>'.$this->createXml($this->keyMap($params), ['rvName', 'rvAddr']).$details.'</ORDER>',
+            ];
+        }
+
+        return $params;
     }
 
     /**
@@ -161,13 +209,13 @@ class Api
 
         $supportedParams = [
             // varchar 100 賣家登入ezShip帳號 需開通網站對接者
-            'su_id' => $this->options['suID'],
+            'su_id' => $this->options['su_id'],
             // varchar 10 ezShip店到店編號 訂單成立後，ezShip回傳給網站的店到店編號
             'sn_id' => null,
             //  varchar 100 回傳網址路徑及程式名稱 請輸入完整網站路徑網址。如 http://yourdomain.domain/direct/program.php
             'rtn_url' => null,
             // varchar 100 網站所需額外判別資料 由開通網站自行提供，ezShip 將原值回傳。
-            'web_para' => null,
+            'web_para' => uniqid(),
             // // varchar 10 店到店編號 訂單成立後，ezShip回傳給網站的店到店編號
             // 'sn_id' => null,
             // // varchar 3 訂單狀態
@@ -196,6 +244,38 @@ class Api
         return $params;
     }
 
+    /**
+     * keyMap.
+     *
+     * @param  array  $array
+     * @param  bool $flip
+     *
+     * @return array
+     */
+    protected function keyMap($array, $flip = false)
+    {
+        $map = $flip === true ? array_flip($this->keyMap) : $this->keyMap;
+        $result = [];
+        foreach ($array as $key => $value) {
+            $key = isset($map[$key]) === true ? $map[$key] : $key;
+            if (is_array($value) === true) {
+                $result[$key] = $this->keyMap($value, $flip);
+            } else {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * createXml.
+     *
+     * @param  array $array
+     * @param  array $cdataSections
+     *
+     * @return string
+     */
     protected function createXml($array, $cdataSections = [])
     {
         $xml = '';
@@ -203,7 +283,7 @@ class Api
             if (is_array($value) === true) {
                 $xml .= sprintf('<%s>%s</%s>', $key, $this->createXml($value, $cdataSections), $key);
             } else {
-                if (in_array($key, $cdataSections, true) === true || (bool) preg_match('/[<>&]/', $value) === true) {
+                if (empty($value) === false && (in_array($key, $cdataSections, true) === true || (bool) preg_match('/[<>&]/', $value) === true)) {
                     $value = '<![CDATA['.$value.']]>';
                 }
                 $xml .= sprintf('<%s>%s</%s>', $key, $value, $key);

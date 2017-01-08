@@ -24,12 +24,12 @@ class ConvertPaymentAction implements ActionInterface
 
         $details = ArrayObject::ensureArrayObject($payment->getDetails());
 
-        $details['orderID'] = $payment->getNumber();
-        $details['orderAmount'] = $payment->getTotalAmount();
-        $details['rvEmail'] = $payment->getClientEmail();
+        $details['order_id'] = $payment->getNumber();
+        $details['order_amount'] = $payment->getTotalAmount();
+        $details['rv_email'] = $payment->getClientEmail();
 
         // CVS
-        $details['processID'] = $details['orderID'];
+        $details['process_id'] = $details['order_id'];
 
         $request->setResult((array) $details);
     }

@@ -19,7 +19,7 @@ class EzShipGatewayFactoryTest extends PHPUnit_Framework_TestCase
         |------------------------------------------------------------
         */
 
-        $suID = 'foo.suID';
+        $suId = 'foo.su_id';
         $httpClient = m::spy('Payum\Core\HttpClientInterface');
         $messageFactory = m::spy('Http\Message\MessageFactory');
         /*
@@ -31,7 +31,7 @@ class EzShipGatewayFactoryTest extends PHPUnit_Framework_TestCase
         $gateway = new EzShipGatewayFactory();
         $config = $gateway->createConfig([
             'api' => false,
-            'suID' => $suID,
+            'su_id' => $suId,
             'payum.http_client' => $httpClient,
             'httplug.message_factory' => $messageFactory,
         ]);
@@ -43,7 +43,7 @@ class EzShipGatewayFactoryTest extends PHPUnit_Framework_TestCase
         |------------------------------------------------------------
         */
 
-        $this->assertSame($suID, $config['suID']);
+        $this->assertSame($suId, $config['su_id']);
         $this->assertInstanceOf('PayumTW\EzShip\Api', $api);
     }
 }

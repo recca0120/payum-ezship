@@ -23,15 +23,16 @@ class ApiTest extends PHPUnit_Framework_TestCase
         $messageFactory = m::spy('Http\Message\MessageFactory');
 
         $options = [
-            'suID' => 'service@ezship.com.tw',
+            'su_id' => 'service@ezship.com.tw',
+            'method' => 'XML',
         ];
 
         $order = [
-            'processID' => '20140318154002',
-            'stCate' => 'A01',
-            'stCode' => '1',
-            'rtURL' => 'http://yourdomain.domain/direct/program.php',
-            'webPara' => '20140318154002-xxx',
+            'process_id' => '20140318154002',
+            'st_cate' => 'A01',
+            'st_code' => '1',
+            'rtn_url' => 'http://yourdomain.domain/direct/program.php',
+            'web_para' => '20140318154002-xxx',
         ];
 
         /*
@@ -58,7 +59,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
         ], $api->createTransaction($order));
     }
 
-    public function test_create_transaction_cvs()
+    public function test_create_transaction_cvs_by_xml()
     {
         /*
         |------------------------------------------------------------
@@ -70,20 +71,21 @@ class ApiTest extends PHPUnit_Framework_TestCase
         $messageFactory = m::spy('Http\Message\MessageFactory');
 
         $options = [
-            'suID' => 'service@ezship.com.tw',
+            'su_id' => 'service@ezship.com.tw',
+            'method' => 'XML',
         ];
 
         $order = [
-            'orderID' => '20140318154002',
-            'orderStatus' => 'A01',
-            'orderType' => '1',
-            'orderAmount' => '1680',
-            'rvName' => '謝無忌',
-            'rvEmail' => '123@ezship.com.tw',
-            'rvMobile' => '0987654321',
-            'stCode' => 'TFM0038',
-            'rtURL' => 'http://yourdomain.domain/direct/program.php',
-            'webPara' => '20140318154002-xxx',
+            'order_id' => '20140318154002',
+            'order_status' => 'A01',
+            'order_type' => '1',
+            'order_amount' => '1680',
+            'rv_name' => '謝無忌',
+            'rv_email' => '123@ezship.com.tw',
+            'rv_mobile' => '0987654321',
+            'st_code' => 'TFM0038',
+            'rtn_url' => 'http://yourdomain.domain/direct/program.php',
+            'web_para' => '20140318154002-xxx',
             'details' => [
                 [
                     'prodItem' => '1',
@@ -152,7 +154,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
         ], $api->createTransaction($order));
     }
 
-    public function test_create_transaction_home()
+    public function test_create_transaction_home_by_xml()
     {
         /*
         |------------------------------------------------------------
@@ -164,37 +166,38 @@ class ApiTest extends PHPUnit_Framework_TestCase
         $messageFactory = m::spy('Http\Message\MessageFactory');
 
         $options = [
-            'suID' => 'service@ezship.com.tw',
+            'su_id' => 'service@ezship.com.tw',
+            'method' => 'XML',
         ];
 
         $order = [
-            'orderID' => '20140318154002',
-            'orderStatus' => 'A05',
-            'orderType' => '1',
-            'orderAmount' => '1680',
-            'rvName' => '謝無忌',
-            'rvEmail' => '123@ezship.com.tw',
-            'rvMobile' => '0987654321',
-            'rvAddr' => '台北市大安區xx路xx段xx號',
-            'rvZip' => '106',
-            'rtURL' => 'http://yourdomain.domain/direct/program.php',
-            'webPara' => '20140318154002-xxx',
+            'order_id' => '20140318154002',
+            'order_status' => 'A05',
+            'order_type' => '1',
+            'order_amount' => '1680',
+            'rv_name' => '謝無忌',
+            'rv_email' => '123@ezship.com.tw',
+            'rv_mobile' => '0987654321',
+            'rv_addr' => '台北市大安區xx路xx段xx號',
+            'rv_zip' => '106',
+            'rtn_url' => 'http://yourdomain.domain/direct/program.php',
+            'web_para' => '20140318154002-xxx',
             'details' => [
                 [
-                    'prodItem' => '1',
-                    'prodNo' => 'A2769-1',
-                    'prodName' => '格子口袋襯衫',
-                    'prodPrice' => '860',
-                    'prodQty' => '1',
-                    'prodSpec' => '白',
+                    'prod_item' => '1',
+                    'prod_no' => 'A2769-1',
+                    'prod_name' => '格子口袋襯衫',
+                    'prod_price' => '860',
+                    'prod_qty' => '1',
+                    'prod_spec' => '白',
                 ],
                 [
-                    'prodItem' => '2',
-                    'prodNo' => 'A2770-2',
-                    'prodName' => '格子口袋襯衫',
-                    'prodPrice' => '820',
-                    'prodQty' => '1',
-                    'prodSpec' => '水藍',
+                    'prod_item' => '2',
+                    'prod_no' => 'A2770-2',
+                    'prod_name' => '格子口袋襯衫',
+                    'prod_price' => '820',
+                    'prod_qty' => '1',
+                    'prod_spec' => '水藍',
                 ],
             ],
         ];
@@ -248,6 +251,84 @@ class ApiTest extends PHPUnit_Framework_TestCase
         ], $api->createTransaction($order));
     }
 
+    public function test_create_transaction_home_by_request()
+    {
+        /*
+        |------------------------------------------------------------
+        | Arrange
+        |------------------------------------------------------------
+        */
+
+        $httpClient = m::spy('Payum\Core\HttpClientInterface');
+        $messageFactory = m::spy('Http\Message\MessageFactory');
+
+        $options = [
+            'su_id' => 'service@ezship.com.tw',
+            'method' => 'HttpRequest',
+        ];
+
+        $order = [
+            'order_id' => '20140318154002',
+            'order_status' => 'A05',
+            'order_type' => '1',
+            'order_amount' => '1680',
+            'rv_name' => '謝無忌',
+            'rv_email' => '123@ezship.com.tw',
+            'rv_mobile' => '0987654321',
+            'rv_addr' => '台北市大安區xx路xx段xx號',
+            'rv_zip' => '106',
+            'rtn_url' => 'http://yourdomain.domain/direct/program.php',
+            'web_para' => '20140318154002-xxx',
+            'details' => [
+                [
+                    'prod_item' => '1',
+                    'prod_no' => 'A2769-1',
+                    'prod_name' => '格子口袋襯衫',
+                    'prod_price' => '860',
+                    'prod_qty' => '1',
+                    'prod_spec' => '白',
+                ],
+                [
+                    'prod_item' => '2',
+                    'prod_no' => 'A2770-2',
+                    'prod_name' => '格子口袋襯衫',
+                    'prod_price' => '820',
+                    'prod_qty' => '1',
+                    'prod_spec' => '水藍',
+                ],
+            ],
+        ];
+
+        /*
+        |------------------------------------------------------------
+        | Act
+        |------------------------------------------------------------
+        */
+
+        $api = new Api($options, $httpClient, $messageFactory);
+
+        /*
+        |------------------------------------------------------------
+        | Assert
+        |------------------------------------------------------------
+        */
+
+        $this->assertSame([
+            'su_id' => 'service@ezship.com.tw',
+            'order_id' => '20140318154002',
+            'order_status' => 'A05',
+            'order_type' => '1',
+            'order_amount' => '1680',
+            'rv_name' => '謝無忌',
+            'rv_email' => '123@ezship.com.tw',
+            'rv_mobile' => '0987654321',
+            'rv_addr' => '台北市大安區xx路xx段xx號',
+            'rv_zip' => '106',
+            'rtn_url' => 'http://yourdomain.domain/direct/program.php',
+            'web_para' => '20140318154002-xxx',
+        ], $api->createTransaction($order));
+    }
+
     public function test_get_transaction_data_from_request()
     {
         /*
@@ -259,10 +340,10 @@ class ApiTest extends PHPUnit_Framework_TestCase
         $httpClient = m::spy('Payum\Core\HttpClientInterface');
         $messageFactory = m::spy('Http\Message\MessageFactory');
 
-        $suID = 'foo.su_id';
+        $su_id = 'foo.su_id';
 
         $options = [
-            'suID' => $suID,
+            'su_id' => $su_id,
         ];
 
         $returnValue = [
@@ -303,15 +384,15 @@ class ApiTest extends PHPUnit_Framework_TestCase
         $httpClient = m::spy('Payum\Core\HttpClientInterface');
         $messageFactory = m::spy('Http\Message\MessageFactory');
 
-        $suID = 'foo.su_id';
+        $su_id = 'foo.su_id';
         $snID = uniqid();
 
         $options = [
-            'suID' => $suID,
+            'su_id' => $su_id,
         ];
 
         $returnValue = [
-            'su_id' => $suID,
+            'su_id' => $su_id,
             'sn_id' => $snID,
             'rtn_url' => 'http://yourdomain.domain/direct/program.php',
             'web_para' => '20140318154002-xxx',

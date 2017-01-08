@@ -14,32 +14,32 @@ class StatusActionTest extends PHPUnit_Framework_TestCase
     public function test_mark_new()
     {
         $this->validate([
-            'orderID' => '20140318154002',
-            'orderStatus' => 'A01',
-            'orderType' => '1',
-            'orderAmount' => '1680',
-            'rvName' => '謝無忌',
-            'rvEmail' => '123@ezship.com.tw',
-            'rvMobile' => '0987654321',
-            'stCode' => 'TFM0038',
-            'rtURL' => 'http://yourdomain.domain/direct/program.php',
-            'webPara' => '20140318154002-xxx',
+            'order_id' => '20140318154002',
+            'order_status' => 'A01',
+            'order_type' => '1',
+            'order_amount' => '1680',
+            'rv_name' => '謝無忌',
+            'rv_email' => '123@ezship.com.tw',
+            'rv_mobile' => '0987654321',
+            'st_code' => 'TFM0038',
+            'rtn_url' => 'http://yourdomain.domain/direct/program.php',
+            'web_para' => '20140318154002-xxx',
             'details' => [
                 [
-                    'prodItem' => '1',
-                    'prodNo' => 'A2769-1',
-                    'prodName' => '格子口袋襯衫',
-                    'prodPrice' => '860',
-                    'prodQty' => '1',
-                    'prodSpec' => '白',
+                    'prod_item' => '1',
+                    'prod_no' => 'A2769-1',
+                    'prod_name' => '格子口袋襯衫',
+                    'prod_price' => '860',
+                    'prod_qty' => '1',
+                    'prod_spec' => '白',
                 ],
                 [
-                    'prodItem' => '2',
-                    'prodNo' => 'A2770-2',
-                    'prodName' => '格子口袋襯衫',
-                    'prodPrice' => '820',
-                    'prodQty' => '1',
-                    'prodSpec' => '水藍',
+                    'prod_item' => '2',
+                    'prod_no' => 'A2770-2',
+                    'prod_name' => '格子口袋襯衫',
+                    'prod_price' => '820',
+                    'prod_qty' => '1',
+                    'prod_spec' => '水藍',
                 ],
             ],
         ], 'markNew');
@@ -48,8 +48,8 @@ class StatusActionTest extends PHPUnit_Framework_TestCase
     public function test_mark_captured()
     {
         $this->validate([
-            'orderID' => '20140318154002',
-            'snID' => '20140318154002',
+            'order_id' => '20140318154002',
+            'sn_id' => '20140318154002',
             'order_status' => 'S01',
             'webPara' => '20140318154002-xxx',
         ], 'markCaptured');
@@ -58,8 +58,8 @@ class StatusActionTest extends PHPUnit_Framework_TestCase
     public function test_mark_failed()
     {
         $this->validate([
-            'orderID' => '20140318154002',
-            'snID' => '20140318154002',
+            'order_id' => '20140318154002',
+            'sn_id' => '20140318154002',
             'order_status' => 'E00',
             'webPara' => '20140318154002-xxx',
         ], 'markFailed');

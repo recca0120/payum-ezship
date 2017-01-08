@@ -20,16 +20,8 @@ class CreateTransactionAction extends BaseApiAwareAction
 
         $details = ArrayObject::ensureArrayObject($request->getModel());
 
-        $params = $this->api->createTransaction((array) $details);
-
-        if (isset($params['status']) === true) {
-            $details->replace($params);
-
-            return;
-        }
-
         throw new HttpPostRedirect(
-            $this->api->getApiEndpoint(empty($details['orderAmount']) === true ? 'cvs' : 'capture'),
+            $this->api->getApiEndpoint(empty($details['order_amount']) === true ? 'cvs' : 'capture'),
             $this->api->createTransaction((array) $details)
         );
     }

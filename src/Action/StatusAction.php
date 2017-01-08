@@ -20,6 +20,24 @@ class StatusAction implements ActionInterface
 
         $details = ArrayObject::ensureArrayObject($request->getModel());
 
+        if (isset($details['processID']) === true && isset($details['stName']) === true) {
+            $request->markCaptured();
+
+            return;
+        }
+
+        if (isset($details['order_id']) === true && isset($details['sn_id']) === true) {
+            if ($details['order_status'] === 'S01') {
+                $request->markCaptured();
+
+                return;
+            }
+
+            $request->markFailed();
+
+            return;
+        }
+
         if (isset($details['sn_id']) === true && isset($details['order_status']) === true) {
             $status = [
                 // 尚未寄件或尚未收到超商總公司提供的寄件訊息
@@ -49,30 +67,6 @@ class StatusAction implements ActionInterface
             ];
 
             call_user_func([$request, $status[$details['order_status']]]);
-
-            return;
-        }
-
-        if (isset($details['processID']) === true) {
-            if (isset($details['stName']) === true) {
-                $request->markCaptured();
-
-                return;
-            }
-
-            $request->markNew();
-
-            return;
-        }
-
-        if (isset($details['order_status']) === true) {
-            if ($details['order_status'] === 'S01') {
-                $request->markCaptured();
-
-                return;
-            }
-
-            $request->markFailed();
 
             return;
         }

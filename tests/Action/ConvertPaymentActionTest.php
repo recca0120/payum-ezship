@@ -59,10 +59,10 @@ class ConvertPaymentActionTest extends PHPUnit_Framework_TestCase
         $source->shouldHaveReceived('getTotalAmount')->once();
         $source->shouldHaveReceived('getClientEmail')->once();
         $request->shouldHaveReceived('setResult')->with([
-            'orderID' => $number,
-            'orderAmount' => $totalAmount,
-            'processID' => $number,
-            'rvEmail' => $clientEmail,
+            'order_id' => $number,
+            'order_amount' => $totalAmount,
+            'process_id' => $number,
+            'rv_email' => $clientEmail,
         ])->once();
     }
 }

@@ -33,7 +33,7 @@ class CaptureAction implements ActionInterface, GatewayAwareInterface
         if (
             isset($httpRequest->request['order_status']) === true ||
             // CVS
-            isset($httpRequest->request['stAddr']) === true
+            isset($httpRequest->request['processID']) === true
         ) {
             $this->gateway->execute(new Sync($details));
 
@@ -43,8 +43,8 @@ class CaptureAction implements ActionInterface, GatewayAwareInterface
         $token = $request->getToken();
         $targetUrl = $token->getTargetUrl();
 
-        if (empty($details['rtURL']) === true) {
-            $details['rtURL'] = $targetUrl;
+        if (empty($details['rtn_url']) === true) {
+            $details['rtn_url'] = $targetUrl;
         }
 
         $this->gateway->execute(new CreateTransaction($details));
