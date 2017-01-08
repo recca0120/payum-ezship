@@ -6,11 +6,56 @@ use PayumTW\EzShip\Api;
 
 class ApiTest extends PHPUnit_Framework_TestCase
 {
-    const TIMEZONE = 'Asia/Taipei';
-
     public function tearDown()
     {
         m::close();
+    }
+
+    public function test_create_cvs_trancation()
+    {
+        /*
+        |------------------------------------------------------------
+        | Arrange
+        |------------------------------------------------------------
+        */
+
+        $httpClient = m::spy('Payum\Core\HttpClientInterface');
+        $messageFactory = m::spy('Http\Message\MessageFactory');
+
+        $options = [
+            'suID' => 'service@ezship.com.tw',
+        ];
+
+        $order = [
+            'processID' => '20140318154002',
+            'stCate' => 'A01',
+            'stCode' => '1',
+            'rtURL' => 'http://yourdomain.domain/direct/program.php',
+            'webPara' => '20140318154002-xxx',
+        ];
+
+        /*
+        |------------------------------------------------------------
+        | Act
+        |------------------------------------------------------------
+        */
+
+        $api = new Api($options, $httpClient, $messageFactory);
+
+        /*
+        |------------------------------------------------------------
+        | Assert
+        |------------------------------------------------------------
+        */
+
+        $this->assertSame([
+            'suID' => 'service@ezship.com.tw',
+            'processID' => '20140318154002',
+            'stCate' => 'A01',
+            'stCode' => '1',
+            'rtURL' => 'http://yourdomain.domain/direct/program.php',
+            'webPara' => '20140318154002-xxx',
+        ], $api->createTransaction($order));
     }
 
     public function test_create_transaction_cvs()
@@ -266,13 +311,13 @@ class ApiTest extends PHPUnit_Framework_TestCase
         ];
 
         $returnValue = [
+            'su_id' => $suID,
             'sn_id' => $snID,
-            'order_status' => 'S01',
-            'webPara' => '20140318154002-xxx',
+            'rtn_url' => 'http://yourdomain.domain/direct/program.php',
+            'web_para' => '20140318154002-xxx',
         ];
 
         $details = [
-            'su_id' => $suID,
             'sn_id' => $snID,
             'rtn_url' => 'http://yourdomain.domain/direct/program.php',
             'web_para' => '20140318154002-xxx',

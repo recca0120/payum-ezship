@@ -4,7 +4,6 @@ namespace PayumTW\EzShip;
 
 use Http\Message\MessageFactory;
 use Payum\Core\HttpClientInterface;
-use Payum\Core\Exception\Http\HttpException;
 
 class Api
 {
@@ -35,34 +34,6 @@ class Api
         $this->options = $options;
         $this->client = $client;
         $this->messageFactory = $messageFactory;
-    }
-
-    /**
-     * @param array $fields
-     *
-     * @return array
-     */
-    protected function doRequest($method, $body, $type = 'captured', $isJson = true)
-    {
-        $headers = [
-            'Content-Type' => 'application/x-www-form-urlencoded',
-        ];
-
-        if (is_array($body) === true) {
-            $body = http_build_query($body);
-        }
-
-        $request = $this->messageFactory->createRequest($method, $this->getApiEndpoint($type), $headers, $body);
-
-        $response = $this->client->send($request);
-
-        if (false == ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)) {
-            throw HttpException::factory($request, $response);
-        }
-
-        $contents = $response->getBody()->getContents();
-
-        return $isJson === true ? json_decode($contents, true) : $contents;
     }
 
     /**

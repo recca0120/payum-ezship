@@ -2,8 +2,8 @@
 
 namespace PayumTW\EzShip\Action\Api;
 
-use Payum\Core\Reply\HttpPostRedirect;
 use Payum\Core\Bridge\Spl\ArrayObject;
+use Payum\Core\Reply\HttpPostRedirect;
 use PayumTW\EzShip\Request\Api\GetTransactionData;
 use Payum\Core\Exception\RequestNotSupportedException;
 

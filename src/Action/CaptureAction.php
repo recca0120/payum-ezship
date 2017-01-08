@@ -11,13 +11,10 @@ use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Request\GetHttpRequest;
 use PayumTW\EzShip\Request\Api\CreateTransaction;
 use Payum\Core\Exception\RequestNotSupportedException;
-use Payum\Core\Security\GenericTokenFactoryAwareTrait;
-use Payum\Core\Security\GenericTokenFactoryAwareInterface;
 
-class CaptureAction implements ActionInterface, GatewayAwareInterface, GenericTokenFactoryAwareInterface
+class CaptureAction implements ActionInterface, GatewayAwareInterface
 {
     use GatewayAwareTrait;
-    use GenericTokenFactoryAwareTrait;
 
     /**
      * {@inheritdoc}
@@ -34,9 +31,9 @@ class CaptureAction implements ActionInterface, GatewayAwareInterface, GenericTo
         $this->gateway->execute($httpRequest);
 
         if (
-            isset($httpRequest->request['ret']) === true ||
+            isset($httpRequest->request['order_status']) === true ||
             // CVS
-            isset($httpRequest->request['status']) === true
+            isset($httpRequest->request['stAddr']) === true
         ) {
             $this->gateway->execute(new Sync($details));
 
