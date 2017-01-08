@@ -203,6 +203,98 @@ class ApiTest extends PHPUnit_Framework_TestCase
         ], $api->createTransaction($order));
     }
 
+    public function test_get_transaction_data_from_request()
+    {
+        /*
+        |------------------------------------------------------------
+        | Arrange
+        |------------------------------------------------------------
+        */
+
+        $httpClient = m::spy('Payum\Core\HttpClientInterface');
+        $messageFactory = m::spy('Http\Message\MessageFactory');
+
+        $suID = 'foo.su_id';
+
+        $options = [
+            'suID' => $suID,
+        ];
+
+        $returnValue = [
+            'sn_id' => uniqid(),
+            'order_status' => 'S01',
+            'webPara' => '20140318154002-xxx',
+        ];
+
+        $details = [
+            'response' => $returnValue,
+        ];
+
+        /*
+        |------------------------------------------------------------
+        | Act
+        |------------------------------------------------------------
+        */
+
+        $api = new Api($options, $httpClient, $messageFactory);
+
+        /*
+        |------------------------------------------------------------
+        | Assert
+        |------------------------------------------------------------
+        */
+
+        $this->assertSame($returnValue, $api->getTransactionData($details));
+    }
+
+    public function test_get_transaction_data()
+    {
+        /*
+        |------------------------------------------------------------
+        | Arrange
+        |------------------------------------------------------------
+        */
+
+        $httpClient = m::spy('Payum\Core\HttpClientInterface');
+        $messageFactory = m::spy('Http\Message\MessageFactory');
+
+        $suID = 'foo.su_id';
+        $snID = uniqid();
+
+        $options = [
+            'suID' => $suID,
+        ];
+
+        $returnValue = [
+            'sn_id' => $snID,
+            'order_status' => 'S01',
+            'webPara' => '20140318154002-xxx',
+        ];
+
+        $details = [
+            'su_id' => $suID,
+            'sn_id' => $snID,
+            'rtn_url' => 'http://yourdomain.domain/direct/program.php',
+            'web_para' => '20140318154002-xxx',
+        ];
+
+        /*
+        |------------------------------------------------------------
+        | Act
+        |------------------------------------------------------------
+        */
+
+        $api = new Api($options, $httpClient, $messageFactory);
+
+        /*
+        |------------------------------------------------------------
+        | Assert
+        |------------------------------------------------------------
+        */
+
+        $this->assertSame($returnValue, $api->getTransactionData($details));
+    }
+
     // public function test_create_transaction()
     // {
     //     /*
@@ -239,7 +331,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     //     |------------------------------------------------------------
     //     */
     //
-    //     $api = new CollectApi($options, $httpClient, $messageFactory);
+    //     $api = new Api($options, $httpClient, $messageFactory);
     //     $params = $api->createTransaction($order);
     //
     //     /*
@@ -305,7 +397,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     //     |------------------------------------------------------------
     //     */
     //
-    //     $api = new CollectApi($options, $httpClient, $messageFactory);
+    //     $api = new Api($options, $httpClient, $messageFactory);
     //
     //     $messageFactory
     //         ->shouldReceive('createRequest')->with('GET', $api->getApiEndpoint('cancel'), $headers, $query)->andReturn($request);
@@ -388,7 +480,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     //     |------------------------------------------------------------
     //     */
     //
-    //     $api = new CollectApi($options, $httpClient, $messageFactory);
+    //     $api = new Api($options, $httpClient, $messageFactory);
     //
     //     $messageFactory
     //         ->shouldReceive('createRequest')->with('GET', $api->getApiEndpoint('refund'), $headers, $query)->andReturn($request);
@@ -461,7 +553,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     //     |------------------------------------------------------------
     //     */
     //
-    //     $api = new CollectApi($options, $httpClient, $messageFactory);
+    //     $api = new Api($options, $httpClient, $messageFactory);
     //
     //     /*
     //     |------------------------------------------------------------
@@ -514,7 +606,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     //     |------------------------------------------------------------
     //     */
     //
-    //     $api = new CollectApi($options, $httpClient, $messageFactory);
+    //     $api = new Api($options, $httpClient, $messageFactory);
     //
     //     /*
     //     |------------------------------------------------------------
@@ -577,7 +669,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     //     |------------------------------------------------------------
     //     */
     //
-    //     $api = new CollectApi($options, $httpClient, $messageFactory);
+    //     $api = new Api($options, $httpClient, $messageFactory);
     //
     //     /*
     //     |------------------------------------------------------------
@@ -640,7 +732,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     //     |------------------------------------------------------------
     //     */
     //
-    //     $api = new CollectApi($options, $httpClient, $messageFactory);
+    //     $api = new Api($options, $httpClient, $messageFactory);
     //
     //     /*
     //     |------------------------------------------------------------
@@ -714,7 +806,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     //     |------------------------------------------------------------
     //     */
     //
-    //     $api = new CollectApi($options, $httpClient, $messageFactory);
+    //     $api = new Api($options, $httpClient, $messageFactory);
     //
     //     /*
     //     |------------------------------------------------------------
@@ -786,7 +878,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     //     |------------------------------------------------------------
     //     */
     //
-    //     $api = new CollectApi($options, $httpClient, $messageFactory);
+    //     $api = new Api($options, $httpClient, $messageFactory);
     //
     //     /*
     //     |------------------------------------------------------------

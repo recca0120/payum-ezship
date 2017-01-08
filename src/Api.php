@@ -42,7 +42,7 @@ class Api
      *
      * @return array
      */
-    protected function doRequest($method, $body, $type = 'cancel', $isJson = true)
+    protected function doRequest($method, $body, $type = 'captured', $isJson = true)
     {
         $headers = [
             'Content-Type' => 'application/x-www-form-urlencoded',
@@ -222,7 +222,7 @@ class Api
             array_intersect_key($params, $supportedParams)
         ));
 
-        return $this->doRequest('POST', $params, 'query', false);
+        return $params;
     }
 
     protected function createXml($array, $cdataSections = [])

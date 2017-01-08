@@ -2,6 +2,7 @@
 
 namespace PayumTW\EzShip\Action\Api;
 
+use Payum\Core\Reply\HttpPostRedirect;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use PayumTW\EzShip\Request\Api\GetTransactionData;
 use Payum\Core\Exception\RequestNotSupportedException;
@@ -21,8 +22,11 @@ class GetTransactionDataAction extends BaseApiAwareAction
 
         $result = $this->api->getTransactionData((array) $details);
 
-        if (isset($result['status']) === true && $result['status'] === '-1') {
-            return;
+        if (isset($result['order_status']) === false) {
+            throw new HttpPostRedirect(
+                $this->api->getApiEndpoint('query'),
+                $result
+            );
         }
 
         $details->replace($result);
