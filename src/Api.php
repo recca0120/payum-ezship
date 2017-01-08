@@ -127,8 +127,14 @@ class Api
             return $this->createCvsTransaction($params);
         }
 
-        $orderStatus = empty($params['st_code']) === false ? 'A03' : 'A05';
-        $orderType = $params['order_amount'] === '0' ? '3' : '1';
+        $orderStatus = 'A05';
+        if (empty($params['st_code']) === false) {
+            $orderStatus = 'A03';
+
+            $params['st_code'] = empty($params['st_cate']) === false ?
+                $params['st_cate'].$params['st_code'] :
+                $params['st_code'];
+        }
 
         $supportedParams = [
             // varchar 100 賣家登入ezShip帳號 需開通網站對接者，取貨付款訂單須帳號於合約期間內
@@ -144,7 +150,7 @@ class Api
             // A06 宅配新訂單，需在ezShip上確認訂單，確認後才可進行印單 (回覆snID，10碼數字)
             'order_status' => $orderStatus,
             // varchar 1 訂單類別 1 取貨付款 3 取貨不付款
-            'order_type' => $orderType,
+            'order_type' => '3',
             // 代收金額或訂單金額
             // 若<orderType>=1，為代收金額 10~6,000
             // 若<orderType>=3，為訂單金額 0~2,000
