@@ -28,6 +28,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
         ];
 
         $order = [
+            'order_amount' => '',
             'process_id' => '20140318154002',
             'st_cate' => 'A01',
             'st_code' => '1',
