@@ -42,9 +42,9 @@ class Api
     public function getApiEndpoint($type = 'capture')
     {
         $endpoints = [
-            'cvs' => ' http://map.ezship.com.tw/ezship_map_web.jsp',
+            'cvs' => ' https://map.ezship.com.tw/ezship_map_web.jsp',
             'capture' => 'https://www.ezship.com.tw/emap/ezship_xml_order_api.jsp',
-            'query' => 'http://www.ezship.com.tw/emap/ezship_request_order_status_api.jsp',
+            'query' => 'https://www.ezship.com.tw/emap/ezship_request_order_status_api.jsp',
         ];
 
         return $endpoints[$type];
