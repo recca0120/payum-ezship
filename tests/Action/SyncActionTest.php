@@ -30,8 +30,6 @@ class SyncActionTest extends PHPUnit_Framework_TestCase
             'webPara' => '20140318154002-xxx',
         ]);
 
-        $targetUrl = 'http://localhost/payment/capture/FEDHD1o-fvtpZqM6QvtNsy_qoLX_8x4QXvfyE94mIZc';
-
         /*
         |------------------------------------------------------------
         | Act
@@ -39,11 +37,7 @@ class SyncActionTest extends PHPUnit_Framework_TestCase
         */
 
         $request
-            ->shouldReceive('getModel')->andReturn($details)
-            ->shouldReceive('getToken')->andReturn($token);
-
-        $token
-            ->shouldReceive('getTargetUrl')->andReturn($targetUrl);
+            ->shouldReceive('getModel')->andReturn($details);
 
         $action = new SyncAction();
         $action->setGateway($gateway);
@@ -56,8 +50,6 @@ class SyncActionTest extends PHPUnit_Framework_TestCase
         */
 
         $request->shouldHaveReceived('getModel')->twice();
-        $request->shouldHaveReceived('getToken')->once();
-        $token->shouldHaveReceived('getTargetUrl')->once();
         $gateway->shouldHaveReceived('execute')->with(m::type('PayumTW\EzShip\Request\Api\GetTransactionData'))->once();
     }
 }

@@ -20,8 +20,6 @@ class CreateTransactionAction extends BaseApiAwareAction
 
         $details = ArrayObject::ensureArrayObject($request->getModel());
 
-        $details->validateNotEmpty(['cust_order_no', 'order_amount', 'order_detail']);
-
         $params = $this->api->createTransaction((array) $details);
 
         if (isset($params['status']) === true) {

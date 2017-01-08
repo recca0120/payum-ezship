@@ -26,15 +26,9 @@ class SyncAction implements ActionInterface, GatewayAwareInterface
 
         $details = ArrayObject::ensureArrayObject($request->getModel());
 
-        $token = $request->getToken();
-        $targetUrl = $token->getTargetUrl();
-
-        if (empty($details['rtn_url']) === true) {
-            $details['rtn_url'] = $targetUrl;
-        }
-
         $httpRequest = new GetHttpRequest();
         $this->gateway->execute($httpRequest);
+
         $details->replace([
             'response' => $httpRequest->request,
         ]);
