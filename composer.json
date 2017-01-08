@@ -34,7 +34,7 @@
     },
     "autoload": {
         "psr-4": {
-            "PayumTW\\Collect\\": "src/"
+            "PayumTW\\EzShip\\": "src/"
         }
     }
 }
