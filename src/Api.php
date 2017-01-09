@@ -129,7 +129,7 @@ class Api
 
         $orderStatus = 'A05';
         if (empty($params['st_code']) === false) {
-            $orderStatus = 'A03';
+            $orderStatus = 'A01';
 
             $params['st_code'] = empty($params['st_cate']) === false ?
                 $params['st_cate'].$params['st_code'] :
