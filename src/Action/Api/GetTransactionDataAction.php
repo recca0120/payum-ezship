@@ -1,9 +1,9 @@
 <?php
 
-namespace PayumTW\EzShip\Action\Api;
+namespace PayumTW\Ezship\Action\Api;
 
 use Payum\Core\Bridge\Spl\ArrayObject;
-use PayumTW\EzShip\Request\Api\GetTransactionData;
+use PayumTW\Ezship\Request\Api\GetTransactionData;
 use Payum\Core\Exception\RequestNotSupportedException;
 
 class GetTransactionDataAction extends BaseApiAwareAction
@@ -19,9 +19,7 @@ class GetTransactionDataAction extends BaseApiAwareAction
 
         $details = ArrayObject::ensureArrayObject($request->getModel());
 
-        $result = $this->api->getTransactionData((array) $details);
-
-        $details->replace($result);
+        $details->replace($this->api->getTransactionData((array) $details));
     }
 
     /**

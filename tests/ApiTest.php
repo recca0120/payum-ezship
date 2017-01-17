@@ -2,7 +2,7 @@
 
 use Mockery as m;
 use Carbon\Carbon;
-use PayumTW\EzShip\Api;
+use PayumTW\Ezship\Api;
 
 class ApiTest extends PHPUnit_Framework_TestCase
 {
@@ -57,7 +57,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
             'stCode' => '1',
             'rtURL' => 'http://yourdomain.domain/direct/program.php',
             'webPara' => '20140318154002-xxx',
-        ], $api->createTransaction($order));
+        ], $api->createCvsTransaction($order));
     }
 
     public function test_create_transaction_cvs_by_xml()
@@ -328,50 +328,6 @@ class ApiTest extends PHPUnit_Framework_TestCase
             'rtn_url' => 'http://yourdomain.domain/direct/program.php',
             'web_para' => '20140318154002-xxx',
         ], $api->createTransaction($order));
-    }
-
-    public function test_get_transaction_data_from_request()
-    {
-        /*
-        |------------------------------------------------------------
-        | Arrange
-        |------------------------------------------------------------
-        */
-
-        $httpClient = m::spy('Payum\Core\HttpClientInterface');
-        $messageFactory = m::spy('Http\Message\MessageFactory');
-
-        $su_id = 'foo.su_id';
-
-        $options = [
-            'su_id' => $su_id,
-        ];
-
-        $returnValue = [
-            'sn_id' => uniqid(),
-            'order_status' => 'S01',
-            'webPara' => '20140318154002-xxx',
-        ];
-
-        $details = [
-            'response' => $returnValue,
-        ];
-
-        /*
-        |------------------------------------------------------------
-        | Act
-        |------------------------------------------------------------
-        */
-
-        $api = new Api($options, $httpClient, $messageFactory);
-
-        /*
-        |------------------------------------------------------------
-        | Assert
-        |------------------------------------------------------------
-        */
-
-        $this->assertSame($returnValue, $api->getTransactionData($details));
     }
 
     public function test_get_transaction_data()

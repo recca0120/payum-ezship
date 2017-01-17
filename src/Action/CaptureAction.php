@@ -1,6 +1,6 @@
 <?php
 
-namespace PayumTW\EzShip\Action;
+namespace PayumTW\Ezship\Action;
 
 use Payum\Core\Request\Sync;
 use Payum\Core\Request\Capture;
@@ -9,10 +9,11 @@ use Payum\Core\GatewayAwareInterface;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Request\GetHttpRequest;
-use PayumTW\EzShip\Request\Api\CreateTransaction;
+use PayumTW\Ezship\Request\Api\CreateTransaction;
 use Payum\Core\Exception\RequestNotSupportedException;
+use PayumTW\Ezship\Action\Api\BaseApiAwareAction;
 
-class CaptureAction implements ActionInterface, GatewayAwareInterface
+class CaptureAction extends BaseApiAwareAction implements ActionInterface, GatewayAwareInterface
 {
     use GatewayAwareTrait;
 
@@ -30,15 +31,24 @@ class CaptureAction implements ActionInterface, GatewayAwareInterface
         $httpRequest = new GetHttpRequest();
         $this->gateway->execute($httpRequest);
 
-        if (
-            isset($httpRequest->request['order_status']) === true ||
-            // CVS
-            isset($httpRequest->request['processID']) === true
-        ) {
-            $this->gateway->execute(new Sync($details));
+        if (isset($httpRequest->request['order_status']) === true) {
+            if ($this->api->verifyHash($details, $httpRequest->request) === false) {
+                $httpRequest->request['order_status'] = 'E99';
+            }
+            $details->replace($httpRequest->request);
 
             return;
         }
+
+       // CVS
+       if (isset($httpRequest->request['processID']) === true) {
+           if ($this->api->verifyHash($details, $httpRequest->request) === false) {
+               $httpRequest->request['order_status'] = 'E99';
+           }
+           $details->replace($httpRequest->request);
+
+           return;
+       }
 
         $token = $request->getToken();
         $targetUrl = $token->getTargetUrl();
@@ -46,6 +56,8 @@ class CaptureAction implements ActionInterface, GatewayAwareInterface
         if (empty($details['rtn_url']) === true) {
             $details['rtn_url'] = $targetUrl;
         }
+
+        $details['web_para'] = uniqid();
 
         $this->gateway->execute(new CreateTransaction($details));
     }

@@ -2,7 +2,7 @@
 
 use Mockery as m;
 use Payum\Core\Bridge\Spl\ArrayObject;
-use PayumTW\EzShip\Action\ConvertPaymentAction;
+use PayumTW\Ezship\Action\ConvertPaymentAction;
 
 class ConvertPaymentActionTest extends PHPUnit_Framework_TestCase
 {

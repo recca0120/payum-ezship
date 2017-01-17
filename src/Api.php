@@ -1,6 +1,6 @@
 <?php
 
-namespace PayumTW\EzShip;
+namespace PayumTW\Ezship;
 
 use Http\Message\MessageFactory;
 use Payum\Core\HttpClientInterface;
@@ -123,10 +123,6 @@ class Api
     {
         $params = $this->keyMap($params, true);
 
-        if ($params['order_amount'] === '') {
-            return $this->createCvsTransaction($params);
-        }
-
         $orderStatus = 'A05';
         if (empty($params['st_code']) === false) {
             $orderStatus = 'A01';
@@ -210,10 +206,6 @@ class Api
      */
     public function getTransactionData(array $params)
     {
-        if (empty($params['response']) === false) {
-            return $params['response'];
-        }
-
         $supportedParams = [
             // varchar 100 賣家登入ezShip帳號 需開通網站對接者
             'su_id' => $this->options['su_id'],
@@ -249,6 +241,12 @@ class Api
         ));
 
         return $params;
+    }
+
+    public function verifyHash($details, array $params) {
+        $webPara = isset($params['web_para']) === true ? $params['web_para'] : $params['webPara'];
+
+        return $webPara === $details['web_para'];
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 
 use Mockery as m;
-use PayumTW\EzShip\Action\SyncAction;
+use PayumTW\Ezship\Action\SyncAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
 
 class SyncActionTest extends PHPUnit_Framework_TestCase
@@ -50,6 +50,6 @@ class SyncActionTest extends PHPUnit_Framework_TestCase
         */
 
         $request->shouldHaveReceived('getModel')->twice();
-        $gateway->shouldHaveReceived('execute')->with(m::type('PayumTW\EzShip\Request\Api\GetTransactionData'))->once();
+        $gateway->shouldHaveReceived('execute')->with(m::type('PayumTW\Ezship\Request\Api\GetTransactionData'))->once();
     }
 }

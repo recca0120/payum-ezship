@@ -2,7 +2,7 @@
 
 use Mockery as m;
 use Payum\Core\Bridge\Spl\ArrayObject;
-use PayumTW\EzShip\Action\StatusAction;
+use PayumTW\Ezship\Action\StatusAction;
 
 class StatusActionTest extends PHPUnit_Framework_TestCase
 {

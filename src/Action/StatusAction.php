@@ -1,6 +1,6 @@
 <?php
 
-namespace PayumTW\EzShip\Action;
+namespace PayumTW\Ezship\Action;
 
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\Bridge\Spl\ArrayObject;

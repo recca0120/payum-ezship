@@ -1,17 +1,17 @@
 <?php
 
-namespace PayumTW\EzShip;
+namespace PayumTW\Ezship;
 
 use Payum\Core\GatewayFactory;
-use PayumTW\EzShip\Action\SyncAction;
+use PayumTW\Ezship\Action\SyncAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
-use PayumTW\EzShip\Action\StatusAction;
-use PayumTW\EzShip\Action\CaptureAction;
-use PayumTW\EzShip\Action\ConvertPaymentAction;
-use PayumTW\EzShip\Action\Api\CreateTransactionAction;
-use PayumTW\EzShip\Action\Api\GetTransactionDataAction;
+use PayumTW\Ezship\Action\StatusAction;
+use PayumTW\Ezship\Action\CaptureAction;
+use PayumTW\Ezship\Action\ConvertPaymentAction;
+use PayumTW\Ezship\Action\Api\CreateTransactionAction;
+use PayumTW\Ezship\Action\Api\GetTransactionDataAction;
 
-class EzShipGatewayFactory extends GatewayFactory
+class EzshipGatewayFactory extends GatewayFactory
 {
     /**
      * {@inheritdoc}
@@ -20,7 +20,7 @@ class EzShipGatewayFactory extends GatewayFactory
     {
         $config->defaults([
             'payum.factory_name' => 'ezship',
-            'payum.factory_title' => 'EzShip',
+            'payum.factory_title' => 'Ezship',
 
             'payum.action.capture' => new CaptureAction(),
             'payum.action.sync' => new SyncAction(),

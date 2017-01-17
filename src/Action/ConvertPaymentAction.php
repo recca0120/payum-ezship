@@ -1,6 +1,6 @@
 <?php
 
-namespace PayumTW\EzShip\Action;
+namespace PayumTW\Ezship\Action;
 
 use Payum\Core\Request\Convert;
 use Payum\Core\Action\ActionInterface;

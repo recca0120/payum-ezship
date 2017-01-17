@@ -1,8 +1,8 @@
 <?php
 
-namespace PayumTW\EzShip\Action\Api;
+namespace PayumTW\Ezship\Action\Api;
 
-use PayumTW\EzShip\Api;
+use PayumTW\Ezship\Api;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\Exception\UnsupportedApiException;

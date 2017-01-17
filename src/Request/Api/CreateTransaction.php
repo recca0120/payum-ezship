@@ -1,6 +1,6 @@
 <?php
 
-namespace PayumTW\EzShip\Request\Api;
+namespace PayumTW\Ezship\Request\Api;
 
 use Payum\Core\Request\Generic;
 

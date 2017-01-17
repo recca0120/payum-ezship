@@ -2,7 +2,7 @@
 
 use Mockery as m;
 use Payum\Core\Bridge\Spl\ArrayObject;
-use PayumTW\EzShip\Action\CaptureAction;
+use PayumTW\Ezship\Action\CaptureAction;
 
 class CaptureActionTest extends PHPUnit_Framework_TestCase
 {
@@ -19,6 +19,7 @@ class CaptureActionTest extends PHPUnit_Framework_TestCase
         |------------------------------------------------------------
         */
 
+        $api = m::spy('PayumTW\Ezship\Api');
         $request = m::spy('Payum\Core\Request\Capture');
         $gateway = m::spy('Payum\Core\GatewayInterface');
         $token = m::spy('Payum\Core\Model\TokenInterface');
@@ -54,6 +55,7 @@ class CaptureActionTest extends PHPUnit_Framework_TestCase
             ->shouldReceive('getTargetUrl')->andReturn($targetUrl);
 
         $action = new CaptureAction();
+        $action->setApi($api);
         $action->setGateway($gateway);
         $action->execute($request);
 
@@ -67,7 +69,7 @@ class CaptureActionTest extends PHPUnit_Framework_TestCase
         $gateway->shouldHaveReceived('execute')->with(m::type('Payum\Core\Request\GetHttpRequest'))->once();
         $request->shouldHaveReceived('getToken')->once();
         $token->shouldHaveReceived('getTargetUrl')->once();
-        $gateway->shouldHaveReceived('execute')->with(m::type('PayumTW\EzShip\Request\Api\CreateTransaction'))->once();
+        $gateway->shouldHaveReceived('execute')->with(m::type('PayumTW\Ezship\Request\Api\CreateTransaction'))->once();
     }
 
     public function test_captured()
@@ -78,6 +80,7 @@ class CaptureActionTest extends PHPUnit_Framework_TestCase
         |------------------------------------------------------------
         */
 
+        $api = m::spy('PayumTW\Ezship\Api');
         $request = m::spy('Payum\Core\Request\Capture');
         $gateway = m::spy('Payum\Core\GatewayInterface');
 
@@ -117,6 +120,7 @@ class CaptureActionTest extends PHPUnit_Framework_TestCase
             });
 
         $action = new CaptureAction();
+        $action->setApi($api);
         $action->setGateway($gateway);
         $action->execute($request);
 
@@ -128,7 +132,6 @@ class CaptureActionTest extends PHPUnit_Framework_TestCase
 
         $request->shouldHaveReceived('getModel')->twice();
         $gateway->shouldHaveReceived('execute')->with(m::type('Payum\Core\Request\GetHttpRequest'))->once();
-        $gateway->shouldHaveReceived('execute')->with(m::type('Payum\Core\Request\Sync'))->once();
     }
 
     public function test_cvs_captured()
@@ -139,6 +142,7 @@ class CaptureActionTest extends PHPUnit_Framework_TestCase
         |------------------------------------------------------------
         */
 
+        $api = m::spy('PayumTW\Ezship\Api');
         $request = m::spy('Payum\Core\Request\Capture');
         $gateway = m::spy('Payum\Core\GatewayInterface');
 
@@ -178,6 +182,7 @@ class CaptureActionTest extends PHPUnit_Framework_TestCase
             });
 
         $action = new CaptureAction();
+        $action->setApi($api);
         $action->setGateway($gateway);
         $action->execute($request);
 
@@ -189,6 +194,5 @@ class CaptureActionTest extends PHPUnit_Framework_TestCase
 
         $request->shouldHaveReceived('getModel')->twice();
         $gateway->shouldHaveReceived('execute')->with(m::type('Payum\Core\Request\GetHttpRequest'))->once();
-        $gateway->shouldHaveReceived('execute')->with(m::type('Payum\Core\Request\Sync'))->once();
     }
 }

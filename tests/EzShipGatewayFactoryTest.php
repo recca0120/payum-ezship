@@ -2,9 +2,9 @@
 
 use Mockery as m;
 use Payum\Core\Bridge\Spl\ArrayObject;
-use PayumTW\EzShip\EzShipGatewayFactory;
+use PayumTW\Ezship\EzshipGatewayFactory;
 
-class EzShipGatewayFactoryTest extends PHPUnit_Framework_TestCase
+class EzshipGatewayFactoryTest extends PHPUnit_Framework_TestCase
 {
     public function tearDown()
     {
@@ -28,7 +28,7 @@ class EzShipGatewayFactoryTest extends PHPUnit_Framework_TestCase
         |------------------------------------------------------------
         */
 
-        $gateway = new EzShipGatewayFactory();
+        $gateway = new EzshipGatewayFactory();
         $config = $gateway->createConfig([
             'api' => false,
             'su_id' => $suId,
@@ -44,6 +44,6 @@ class EzShipGatewayFactoryTest extends PHPUnit_Framework_TestCase
         */
 
         $this->assertSame($suId, $config['su_id']);
-        $this->assertInstanceOf('PayumTW\EzShip\Api', $api);
+        $this->assertInstanceOf('PayumTW\Ezship\Api', $api);
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace PayumTW\EzShip\Action\Api;
+namespace PayumTW\Ezship\Action\Api;
 
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Reply\HttpPostRedirect;
-use PayumTW\EzShip\Request\Api\CreateTransaction;
+use PayumTW\Ezship\Request\Api\CreateTransaction;
 use Payum\Core\Exception\RequestNotSupportedException;
 
 class CreateTransactionAction extends BaseApiAwareAction
@@ -20,8 +20,15 @@ class CreateTransactionAction extends BaseApiAwareAction
 
         $details = ArrayObject::ensureArrayObject($request->getModel());
 
+        if (empty($details['order_amount']) === true) {
+            throw new HttpPostRedirect(
+                $this->api->getApiEndpoint('cvs'),
+                $this->api->createCvsTransaction((array) $details)
+            );
+        }
+
         throw new HttpPostRedirect(
-            $this->api->getApiEndpoint(empty($details['order_amount']) === true ? 'cvs' : 'capture'),
+            $this->api->getApiEndpoint('capture'),
             $this->api->createTransaction((array) $details)
         );
     }
