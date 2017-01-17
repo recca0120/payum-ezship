@@ -2,16 +2,15 @@
 
 namespace PayumTW\Ezship\Action;
 
-use Payum\Core\Request\Sync;
 use Payum\Core\Request\Capture;
 use Payum\Core\GatewayAwareTrait;
 use Payum\Core\GatewayAwareInterface;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Request\GetHttpRequest;
+use PayumTW\Ezship\Action\Api\BaseApiAwareAction;
 use PayumTW\Ezship\Request\Api\CreateTransaction;
 use Payum\Core\Exception\RequestNotSupportedException;
-use PayumTW\Ezship\Action\Api\BaseApiAwareAction;
 
 class CaptureAction extends BaseApiAwareAction implements ActionInterface, GatewayAwareInterface
 {
@@ -32,7 +31,7 @@ class CaptureAction extends BaseApiAwareAction implements ActionInterface, Gatew
         $this->gateway->execute($httpRequest);
 
         if (isset($httpRequest->request['order_status']) === true) {
-            if ($this->api->verifyHash($details, $httpRequest->request) === false) {
+            if ($this->api->verify($details, $httpRequest->request) === false) {
                 $httpRequest->request['order_status'] = 'E99';
             }
             $details->replace($httpRequest->request);
@@ -42,7 +41,7 @@ class CaptureAction extends BaseApiAwareAction implements ActionInterface, Gatew
 
        // CVS
        if (isset($httpRequest->request['processID']) === true) {
-           if ($this->api->verifyHash($details, $httpRequest->request) === false) {
+           if ($this->api->verify($details, $httpRequest->request) === false) {
                $httpRequest->request['order_status'] = 'E99';
            }
            $details->replace($httpRequest->request);

@@ -4,7 +4,7 @@ use Mockery as m;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use PayumTW\Ezship\EzshipGatewayFactory;
 
-class EzshipGatewayFactoryTest extends PHPUnit_Framework_TestCase
+class EzShipGatewayFactoryTest extends PHPUnit_Framework_TestCase
 {
     public function tearDown()
     {
