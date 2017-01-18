@@ -72,7 +72,7 @@ class CaptureActionTest extends PHPUnit_Framework_TestCase
         $gateway->shouldHaveReceived('execute')->with(m::type('PayumTW\Ezship\Request\Api\CreateTransaction'))->once();
     }
 
-    public function test_captured()
+    public function test_capture_success()
     {
         /*
         |------------------------------------------------------------
@@ -96,7 +96,7 @@ class CaptureActionTest extends PHPUnit_Framework_TestCase
             'webPara' => '20140318154002-xxx',
         ]);
 
-        $data = [
+        $response = [
             'orderID' => '20140318154002',
             'snID' => '20140318154002',
             'order_status' => 'S01',
@@ -113,11 +113,14 @@ class CaptureActionTest extends PHPUnit_Framework_TestCase
             ->shouldReceive('getModel')->andReturn($details);
 
         $gateway
-            ->shouldReceive('execute')->with(m::type('Payum\Core\Request\GetHttpRequest'))->andReturnUsing(function ($httpRquest) use ($data) {
-                $httpRquest->request = $data;
+            ->shouldReceive('execute')->with(m::type('Payum\Core\Request\GetHttpRequest'))->andReturnUsing(function ($httpRquest) use ($response) {
+                $httpRquest->request = $response;
 
                 return $httpRquest;
             });
+
+        $api
+            ->shouldReceive('verifyHash')->with($response, $details)->andReturn(true);
 
         $action = new CaptureAction();
         $action->setApi($api);
@@ -130,11 +133,108 @@ class CaptureActionTest extends PHPUnit_Framework_TestCase
         |------------------------------------------------------------
         */
 
+        $this->assertSame([
+            'orderID' => '20140318154002',
+            'orderStatus' => 'A01',
+            'orderType' => '1',
+            'orderAmount' => '1680',
+            'rvName' => '謝無忌',
+            'rvEmail' => '123@ezship.com.tw',
+            'rvMobile' => '0987654321',
+            'stCode' => 'TFM0038',
+            'webPara' => '20140318154002-xxx',
+            'snID' => '20140318154002',
+            'order_status' => 'S01',
+            'webPara' => '20140318154002-xxx',
+        ], $details->toUnsafeArray());
+
         $request->shouldHaveReceived('getModel')->twice();
         $gateway->shouldHaveReceived('execute')->with(m::type('Payum\Core\Request\GetHttpRequest'))->once();
+        $api->shouldHaveReceived('verifyHash')->with($response, $details)->once();
     }
 
-    public function test_cvs_captured()
+    public function test_capture_fail()
+    {
+        /*
+        |------------------------------------------------------------
+        | Arrange
+        |------------------------------------------------------------
+        */
+
+        $api = m::spy('PayumTW\Ezship\Api');
+        $request = m::spy('Payum\Core\Request\Capture');
+        $gateway = m::spy('Payum\Core\GatewayInterface');
+
+        $details = new ArrayObject([
+            'orderID' => '20140318154002',
+            'orderStatus' => 'A01',
+            'orderType' => '1',
+            'orderAmount' => '1680',
+            'rvName' => '謝無忌',
+            'rvEmail' => '123@ezship.com.tw',
+            'rvMobile' => '0987654321',
+            'stCode' => 'TFM0038',
+            'webPara' => '20140318154002-xxx',
+        ]);
+
+        $response = [
+            'orderID' => '20140318154002',
+            'snID' => '20140318154002',
+            'order_status' => 'S01',
+            'webPara' => '20140318154002-xxx',
+        ];
+
+        /*
+        |------------------------------------------------------------
+        | Act
+        |------------------------------------------------------------
+        */
+
+        $request
+            ->shouldReceive('getModel')->andReturn($details);
+
+        $gateway
+            ->shouldReceive('execute')->with(m::type('Payum\Core\Request\GetHttpRequest'))->andReturnUsing(function ($httpRquest) use ($response) {
+                $httpRquest->request = $response;
+
+                return $httpRquest;
+            });
+
+        $api
+            ->shouldReceive('verifyHash')->with($response, $details)->andReturn(false);
+
+        $action = new CaptureAction();
+        $action->setApi($api);
+        $action->setGateway($gateway);
+        $action->execute($request);
+
+        /*
+        |------------------------------------------------------------
+        | Assert
+        |------------------------------------------------------------
+        */
+
+        $this->assertSame([
+            'orderID' => '20140318154002',
+            'orderStatus' => 'A01',
+            'orderType' => '1',
+            'orderAmount' => '1680',
+            'rvName' => '謝無忌',
+            'rvEmail' => '123@ezship.com.tw',
+            'rvMobile' => '0987654321',
+            'stCode' => 'TFM0038',
+            'webPara' => '20140318154002-xxx',
+            'snID' => '20140318154002',
+            'order_status' => 'E99',
+            'webPara' => '20140318154002-xxx',
+        ], $details->toUnsafeArray());
+
+        $request->shouldHaveReceived('getModel')->twice();
+        $gateway->shouldHaveReceived('execute')->with(m::type('Payum\Core\Request\GetHttpRequest'))->once();
+        $api->shouldHaveReceived('verifyHash')->with($response, $details)->once();
+    }
+
+    public function test_cvs_capture_success()
     {
         /*
         |------------------------------------------------------------
@@ -155,7 +255,7 @@ class CaptureActionTest extends PHPUnit_Framework_TestCase
             'webPara' => '20140318154002-xxx',
         ]);
 
-        $data = [
+        $response = [
             'processID' => '20140318154002',
             'stCate' => 'TFM',
             'stCode' => '0038',
@@ -175,11 +275,14 @@ class CaptureActionTest extends PHPUnit_Framework_TestCase
             ->shouldReceive('getModel')->andReturn($details);
 
         $gateway
-            ->shouldReceive('execute')->with(m::type('Payum\Core\Request\GetHttpRequest'))->andReturnUsing(function ($httpRquest) use ($data) {
-                $httpRquest->request = $data;
+            ->shouldReceive('execute')->with(m::type('Payum\Core\Request\GetHttpRequest'))->andReturnUsing(function ($httpRquest) use ($response) {
+                $httpRquest->request = $response;
 
                 return $httpRquest;
             });
+
+        $api
+            ->shouldReceive('verifyHash')->with($response, $details)->andReturn(true);
 
         $action = new CaptureAction();
         $action->setApi($api);
@@ -192,7 +295,101 @@ class CaptureActionTest extends PHPUnit_Framework_TestCase
         |------------------------------------------------------------
         */
 
+        $this->assertSame([
+            'suID' => '20140318154002',
+            'processID' => '20140318154002',
+            'stCate' => 'TFM',
+            'stCode' => '0038',
+            'rtURL' => 'http://yourdomain.domain/direct/program.php',
+            'webPara' => '20140318154002-xxx',
+            // response
+            'stName' => '門市名稱',
+            'stAddr' => '門市地址',
+            'stTel' => '門市電話',
+        ], $details->toUnsafeArray());
+
         $request->shouldHaveReceived('getModel')->twice();
         $gateway->shouldHaveReceived('execute')->with(m::type('Payum\Core\Request\GetHttpRequest'))->once();
+        $api->shouldHaveReceived('verifyHash')->with($response, $details)->once();
+    }
+
+    public function test_cvs_capture_fail()
+    {
+        /*
+        |------------------------------------------------------------
+        | Arrange
+        |------------------------------------------------------------
+        */
+
+        $api = m::spy('PayumTW\Ezship\Api');
+        $request = m::spy('Payum\Core\Request\Capture');
+        $gateway = m::spy('Payum\Core\GatewayInterface');
+
+        $details = new ArrayObject([
+            'suID' => '20140318154002',
+            'processID' => '20140318154002',
+            'stCate' => 'TFM',
+            'stCode' => '0038',
+            'rtURL' => 'http://yourdomain.domain/direct/program.php',
+            'webPara' => '20140318154002-xxx',
+        ]);
+
+        $response = [
+            'processID' => '20140318154002',
+            'stCate' => 'TFM',
+            'stCode' => '0038',
+            'stName' => '門市名稱',
+            'stAddr' => '門市地址',
+            'stTel' => '門市電話',
+            'webPara' => '20140318154002-xxx',
+        ];
+
+        /*
+        |------------------------------------------------------------
+        | Act
+        |------------------------------------------------------------
+        */
+
+        $request
+            ->shouldReceive('getModel')->andReturn($details);
+
+        $gateway
+            ->shouldReceive('execute')->with(m::type('Payum\Core\Request\GetHttpRequest'))->andReturnUsing(function ($httpRquest) use ($response) {
+                $httpRquest->request = $response;
+
+                return $httpRquest;
+            });
+
+        $api
+            ->shouldReceive('verifyHash')->with($response, $details)->andReturn(false);
+
+        $action = new CaptureAction();
+        $action->setApi($api);
+        $action->setGateway($gateway);
+        $action->execute($request);
+
+        /*
+        |------------------------------------------------------------
+        | Assert
+        |------------------------------------------------------------
+        */
+
+        $this->assertSame([
+            'suID' => '20140318154002',
+            'processID' => '20140318154002',
+            'stCate' => 'TFM',
+            'stCode' => '0038',
+            'rtURL' => 'http://yourdomain.domain/direct/program.php',
+            'webPara' => '20140318154002-xxx',
+            // response
+            'stName' => '門市名稱',
+            'stAddr' => '門市地址',
+            'stTel' => '門市電話',
+            'order_status' => 'E99',
+        ], $details->toUnsafeArray());
+
+        $request->shouldHaveReceived('getModel')->twice();
+        $gateway->shouldHaveReceived('execute')->with(m::type('Payum\Core\Request\GetHttpRequest'))->once();
+        $api->shouldHaveReceived('verifyHash')->with($response, $details)->once();
     }
 }

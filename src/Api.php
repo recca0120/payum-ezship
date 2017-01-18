@@ -244,14 +244,14 @@ class Api
     }
 
     /**
-     * verify.
+     * verifyHash.
      *
+     * @param  array $params
      * @param  array $details
-     * @param  array  $params
      *
      * @return bool
      */
-    public function verify($details, array $params)
+    public function verifyHash(array $params, $details)
     {
         $webPara = isset($params['web_para']) === true ? $params['web_para'] : $params['webPara'];
 
