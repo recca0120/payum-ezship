@@ -17,7 +17,7 @@ The Payum extension to rapidly build new extensions.
 $ composer create-project payum-tw/ezship
 ```
 
-2. Replace all occurrences of `payum` with your vendor name. It may be your github name, for now let's say you choose: `acme`.
+2. Replace all occurrences of `payum` with your vendor name. It may be your github name, for now let's say you choose: `ezship`.
 3. Replace all occurrences of `ezship` with a payment gateway name. For example Stripe, Paypal etc. For now let's say you choose: `ezship`.
 4. Register a gateway factory to the payum's builder and create a gateway:
 
@@ -31,16 +31,15 @@ $defaultConfig = [];
 
 $payum = (new PayumBuilder)
     ->addGatewayFactory('ezship', function(array $config, GatewayFactoryInterface $coreGatewayFactory) {
-        return new \PayumTW\Collect\CollectGatewayFactory($config, $coreGatewayFactory);
+        return new \PayumTW\Ezship\EzshipGatewayFactory($config, $coreGatewayFactory);
     })
 
     ->addGateway('ezship', [
         'factory' => 'ezship',
-        'suID' => null,
+        'su_id' => null,
     ])
 
-    ->getPayum()
-;
+    ->getPayum();
 ```
 
 5. While using the gateway implement all method where you get `Not implemented` exception:
