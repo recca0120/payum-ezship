@@ -23,7 +23,7 @@ class CreateTransactionAction extends BaseApiAwareAction
         if (empty($details['order_amount']) === true) {
             throw new HttpPostRedirect(
                 $this->api->getApiEndpoint('cvs'),
-                $this->api->createCvsTransaction((array) $details)
+                $this->api->createCvsMapTransaction((array) $details)
             );
         }
 

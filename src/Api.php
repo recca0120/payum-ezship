@@ -81,13 +81,13 @@ class Api
     }
 
     /**
-     * createCvsTransaction.
+     * createCvsMapTransaction.
      *
      * @param  array  $params
      *
      * @return array
      */
-    public function createCvsTransaction(array $params)
+    public function createCvsMapTransaction(array $params)
     {
         $supportedParams = [
             // varchar 100 賣家登入ezShip帳號 需開通網站對接者

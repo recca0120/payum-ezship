@@ -1,7 +1,6 @@
 <?php
 
 use Mockery as m;
-use Carbon\Carbon;
 use PayumTW\Ezship\Api;
 
 class ApiTest extends PHPUnit_Framework_TestCase
@@ -11,7 +10,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
         m::close();
     }
 
-    public function test_create_cvs_trancation()
+    public function test_create_cvs_map_trancation()
     {
         /*
         |------------------------------------------------------------
@@ -57,7 +56,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
             'stCode' => '1',
             'rtURL' => 'http://yourdomain.domain/direct/program.php',
             'webPara' => '20140318154002-xxx',
-        ], $api->createCvsTransaction($order));
+        ], $api->createCvsMapTransaction($order));
     }
 
     public function test_create_transaction_cvs_by_xml()
@@ -348,7 +347,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
             'su_id' => $su_id,
         ];
 
-        $returnValue = [
+        $response = [
             'su_id' => $su_id,
             'sn_id' => $snID,
             'rtn_url' => 'http://yourdomain.domain/direct/program.php',
@@ -375,6 +374,6 @@ class ApiTest extends PHPUnit_Framework_TestCase
         |------------------------------------------------------------
         */
 
-        $this->assertSame($returnValue, $api->getTransactionData($details));
+        $this->assertSame($response, $api->getTransactionData($details));
     }
 }
