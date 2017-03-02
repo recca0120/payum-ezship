@@ -30,7 +30,9 @@ class CaptureAction extends BaseApiAwareAction implements ActionInterface, Gatew
         $httpRequest = new GetHttpRequest();
         $this->gateway->execute($httpRequest);
 
-        if (isset($httpRequest->request['order_status']) === true) {
+        if (isset($httpRequest->request['order_status']) === true ||
+            isset($httpRequest->request['processID']) === true // CVS
+        ) {
             if ($this->api->verifyHash($httpRequest->request, $details) === false) {
                 $httpRequest->request['order_status'] = 'E99';
             }
@@ -38,16 +40,6 @@ class CaptureAction extends BaseApiAwareAction implements ActionInterface, Gatew
 
             return;
         }
-
-       // CVS
-       if (isset($httpRequest->request['processID']) === true) {
-           if ($this->api->verifyHash($httpRequest->request, $details) === false) {
-               $httpRequest->request['order_status'] = 'E99';
-           }
-           $details->replace($httpRequest->request);
-
-           return;
-       }
 
         $token = $request->getToken();
         $targetUrl = $token->getTargetUrl();
