@@ -1,55 +1,31 @@
 <?php
 
-use Mockery as m;
-use PayumTW\Ezship\Action\SyncAction;
-use Payum\Core\Bridge\Spl\ArrayObject;
+namespace PayumTW\Ezship\Tests\Action;
 
-class SyncActionTest extends PHPUnit_Framework_TestCase
+use Mockery as m;
+use Payum\Core\Request\Sync;
+use PHPUnit\Framework\TestCase;
+use Payum\Core\Bridge\Spl\ArrayObject;
+use PayumTW\Ezship\Action\SyncAction;
+
+class SyncActionTest extends TestCase
 {
-    public function tearDown()
+    protected function tearDown()
     {
         m::close();
     }
 
-    public function test_sync()
+    public function testExecute()
     {
-        /*
-        |------------------------------------------------------------
-        | Arrange
-        |------------------------------------------------------------
-        */
-
-        $request = m::spy('Payum\Core\Request\Sync');
-        $gateway = m::spy('Payum\Core\GatewayInterface');
-        $token = m::spy('Payum\Core\Model\TokenInterface');
-
-        $details = new ArrayObject([
-            'orderID' => '20140318154002',
-            'snID' => '20140318154002',
-            'order_status' => 'S01',
-            'webPara' => '20140318154002-xxx',
-        ]);
-
-        /*
-        |------------------------------------------------------------
-        | Act
-        |------------------------------------------------------------
-        */
-
-        $request
-            ->shouldReceive('getModel')->andReturn($details);
-
         $action = new SyncAction();
-        $action->setGateway($gateway);
+        $request = new Sync(new ArrayObject([]));
+
+        $action->setGateway(
+            $gateway = m::mock('Payum\Core\GatewayInterface')
+        );
+
+        $gateway->shouldReceive('execute')->once()->with('PayumTW\Ezship\Request\Api\getTransactionData');
+
         $action->execute($request);
-
-        /*
-        |------------------------------------------------------------
-        | Assert
-        |------------------------------------------------------------
-        */
-
-        $request->shouldHaveReceived('getModel')->twice();
-        $gateway->shouldHaveReceived('execute')->with(m::type('PayumTW\Ezship\Request\Api\GetTransactionData'))->once();
     }
 }

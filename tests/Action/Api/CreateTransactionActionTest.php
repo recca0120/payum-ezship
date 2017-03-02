@@ -1,126 +1,62 @@
 <?php
 
+namespace PayumTW\Ezship\Tests\Action\Api;
+
 use Mockery as m;
+use PHPUnit\Framework\TestCase;
 use Payum\Core\Bridge\Spl\ArrayObject;
+use Payum\Core\Reply\HttpPostRedirect;
+use PayumTW\Ezship\Request\Api\CreateTransaction;
 use PayumTW\Ezship\Action\Api\CreateTransactionAction;
 
-class CreateTransactionActionTest extends PHPUnit_Framework_TestCase
+class CreateTransactionActionTest extends TestCase
 {
-    public function tearDown()
+    protected function tearDown()
     {
         m::close();
     }
 
-    /**
-     * @expectedException   \Payum\Core\Reply\HttpPostRedirect
-     */
-    public function test_execute()
+    public function testExecute()
     {
-        /*
-        |------------------------------------------------------------
-        | Arrange
-        |------------------------------------------------------------
-        */
-
-        $request = m::spy('PayumTW\Ezship\Request\Api\CreateTransaction, ArrayAccess');
-        $api = m::spy('PayumTW\Ezship\Api');
-        $details = new ArrayObject([
-            'su_id' => 'service@ezship.com.tw',
-            'method' => 'HttpRequest',
-            'order_id' => '20140318154002',
-            'order_status' => 'A05',
-            'order_type' => '1',
-            'order_amount' => '1680',
-            'rv_name' => '謝無忌',
-            'rv_email' => '123@ezship.com.tw',
-            'rv_mobile' => '0987654321',
-            'rv_addr' => '台北市大安區xx路xx段xx號',
-            'rv_zip' => '106',
-            'rtn_url' => 'http://yourdomain.domain/direct/program.php',
-            'web_para' => '20140318154002-xxx',
-        ]);
-
-        $endpoint = 'foo.endpoint';
-
-        /*
-        |------------------------------------------------------------
-        | Act
-        |------------------------------------------------------------
-        */
-
-        $request
-            ->shouldReceive('getModel')->andReturn($details);
-
-        $api
-            ->shouldReceive('getApiEndpoint')->with('capture')->andReturn($endpoint)
-            ->shouldReceive('createTransaction')->with($details->toUnsafeArray())->andReturn($details->toUnsafeArray());
-
         $action = new CreateTransactionAction();
-        $action->setApi($api);
+        $request = new CreateTransaction(new ArrayObject([
+            'order_amount' => 100
+        ]));
 
-        /*
-        |------------------------------------------------------------
-        | Assert
-        |------------------------------------------------------------
-        */
+        $action->setApi(
+            $api = m::mock('PayumTW\Ezship\Api')
+        );
 
-        $action->execute($request);
-        $request->shouldHaveReceived('getModel')->twice();
-        $api->shouldHaveReceived('getApiEndpoint')->with('capture')->once();
-        $api->shouldHaveReceived('createTransaction')->with($details->toUnsafeArray())->once();
+        $api->shouldReceive('getApiEndpoint')->once('capture')->andReturn($apiEndpoint = 'foo');
+        $api->shouldReceive('createTransaction')->once()->with((array) $request->getModel())->andReturn($params = ['foo' => 'bar']);
+
+        try {
+            $action->execute($request);
+        } catch (HttpPostRedirect $e) {
+            $this->assertSame($apiEndpoint, $e->getUrl());
+            $this->assertSame($params, $e->getFields());
+        }
     }
 
-    /**
-     * @expectedException   \Payum\Core\Reply\HttpPostRedirect
-     */
-    public function test_cvs_map_execute()
+    public function testExecuteCVS()
     {
-        /*
-        |------------------------------------------------------------
-        | Arrange
-        |------------------------------------------------------------
-        */
-
-        $request = m::spy('PayumTW\Ezship\Request\Api\CreateTransaction, ArrayAccess');
-        $api = m::spy('PayumTW\Ezship\Api');
-        $details = new ArrayObject([
-            'su_id' => 'service@ezship.com.tw',
-            'method' => 'XML',
-            'order_amount' => '',
-            'process_id' => '20140318154002',
-            'st_cate' => 'A01',
-            'st_code' => '1',
-            'rtn_url' => 'http://yourdomain.domain/direct/program.php',
-            'web_para' => '20140318154002-xxx',
-        ]);
-
-        $endpoint = 'foo.endpoint';
-
-        /*
-        |------------------------------------------------------------
-        | Act
-        |------------------------------------------------------------
-        */
-
-        $request
-            ->shouldReceive('getModel')->andReturn($details);
-
-        $api
-            ->shouldReceive('getApiEndpoint')->with('cvs')->andReturn($endpoint)
-            ->shouldReceive('createCvsMapTransaction')->with($details->toUnsafeArray())->andReturn($details->toUnsafeArray());
-
         $action = new CreateTransactionAction();
-        $action->setApi($api);
+        $request = new CreateTransaction(new ArrayObject([
+            'order_amount' => 0
+        ]));
 
-        /*
-        |------------------------------------------------------------
-        | Assert
-        |------------------------------------------------------------
-        */
+        $action->setApi(
+            $api = m::mock('PayumTW\Ezship\Api')
+        );
 
-        $action->execute($request);
-        $request->shouldHaveReceived('getModel')->twice();
-        $api->shouldHaveReceived('getApiEndpoint')->with('capture')->once();
-        $api->shouldHaveReceived('createCvsMapTransaction')->with($details->toUnsafeArray())->once();
+        $api->shouldReceive('getApiEndpoint')->once('cvs')->andReturn($apiEndpoint = 'foo');
+        $api->shouldReceive('createCvsMapTransaction')->once()->with((array) $request->getModel())->andReturn($params = ['foo' => 'bar']);
+
+        try {
+            $action->execute($request);
+        } catch (HttpPostRedirect $e) {
+            $this->assertSame($apiEndpoint, $e->getUrl());
+            $this->assertSame($params, $e->getFields());
+        }
     }
 }

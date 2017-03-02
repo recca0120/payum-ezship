@@ -1,52 +1,33 @@
 <?php
 
+namespace PayumTW\Ezship\Tests\Action\Api;
+
 use Mockery as m;
+use PHPUnit\Framework\TestCase;
 use Payum\Core\Bridge\Spl\ArrayObject;
+use PayumTW\Ezship\Request\Api\GetTransactionData;
 use PayumTW\Ezship\Action\Api\GetTransactionDataAction;
 
-class GetTransactionDataActionTest extends PHPUnit_Framework_TestCase
+class GetTransactionDataActionTest extends TestCase
 {
-    public function tearDown()
+    protected function tearDown()
     {
         m::close();
     }
 
-    public function test_get_transaction_data()
+    public function testExecute()
     {
-        /*
-        |------------------------------------------------------------
-        | Arrange
-        |------------------------------------------------------------
-        */
-
-        $api = m::spy('PayumTW\Ezship\Api');
-        $request = m::spy('PayumTW\Ezship\Request\Api\GetTransactionData');
-        $details = m::mock(new ArrayObject([]));
-
-        /*
-        |------------------------------------------------------------
-        | Act
-        |------------------------------------------------------------
-        */
-
-        $request
-            ->shouldReceive('getModel')->andReturn($details);
-
-        $api
-            ->shouldReceive('getTransactionData')->andReturn($details->toUnsafeArray());
-
         $action = new GetTransactionDataAction();
-        $action->setApi($api);
+        $request = new GetTransactionData(new ArrayObject([]));
+
+        $action->setApi(
+            $api = m::mock('PayumTW\Ezship\Api')
+        );
+
+        $api->shouldReceive('getTransactionData')->once()->with((array) $request->getModel())->andReturn($params = ['foo' => 'bar']);
+
         $action->execute($request);
 
-        /*
-        |------------------------------------------------------------
-        | Assert
-        |------------------------------------------------------------
-        */
-
-        $request->shouldHaveReceived('getModel')->twice();
-        $api->shouldHaveReceived('getTransactionData')->with($details->toUnsafeArray())->once();
-        $details->shouldHaveReceived('replace')->with($details->toUnsafeArray())->once();
+        $this->assertSame($params, (array) $request->getModel());
     }
 }

@@ -36,5 +36,14 @@
         "psr-4": {
             "PayumTW\\Ezship\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PayumTW\\Ezship\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
     }
 }

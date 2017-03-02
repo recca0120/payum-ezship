@@ -1,17 +1,20 @@
 <?php
 
+namespace PayumTW\Ezship\Tests\Action;
+
 use Mockery as m;
+use PHPUnit\Framework\TestCase;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use PayumTW\Ezship\Action\StatusAction;
 
-class StatusActionTest extends PHPUnit_Framework_TestCase
+class StatusActionTest extends TestCase
 {
-    public function tearDown()
+    protected function tearDown()
     {
         m::close();
     }
 
-    public function test_mark_new()
+    public function testMarkNew()
     {
         $this->validate([
             'order_id' => '20140318154002',
@@ -43,9 +46,25 @@ class StatusActionTest extends PHPUnit_Framework_TestCase
                 ],
             ],
         ], 'markNew');
+
+        $this->validate([
+            'suID' => '20140318154002',
+            'processID' => '20140318154002',
+            'stCate' => 'TFM',
+            'stCode' => '0038',
+            'rtURL' => 'http://yourdomain.domain/direct/program.php',
+            'webPara' => '20140318154002-xxx',
+        ], 'markNew');
+
+        $this->validate([
+            'su_id' => '20140318154002',
+            'sn_id' => '20140318154002',
+            'rtn_url' => 'http://yourdomain.domain/direct/program.php',
+            'web_para' => '20140318154002-xxx',
+        ], 'markNew');
     }
 
-    public function test_mark_captured()
+    public function testMarkCaptured()
     {
         $this->validate([
             'order_type' => '1',
@@ -80,9 +99,24 @@ class StatusActionTest extends PHPUnit_Framework_TestCase
             'order_status' => 'S01',
             'webPara' => '20140318154002-xxx',
         ], 'markCaptured');
+
+        $this->validate([
+            'suID' => '20140318154002',
+            'processID' => '20140318154002',
+            'stCate' => 'TFM',
+            'stCode' => '0038',
+            'rtURL' => 'http://yourdomain.domain/direct/program.php',
+            'webPara' => '20140318154002-xxx',
+            // response
+            'stCate' => 'TFM',
+            'stCode' => '0038',
+            'stName' => '門市名稱',
+            'stAddr' => '門市地址',
+            'stTel' => '門市電話',
+        ], 'markCaptured');
     }
 
-    public function test_mark_failed()
+    public function testMarkFailed()
     {
         $this->validate([
             'order_type' => '1',
@@ -117,49 +151,17 @@ class StatusActionTest extends PHPUnit_Framework_TestCase
             'order_status' => 'E00',
             'webPara' => '20140318154002-xxx',
         ], 'markFailed');
+
+        foreach (['E00', 'E01', 'E02', 'E03', 'E04', 'E99'] as $status) {
+            $this->validate([
+                'sn_id' => '20140318154002',
+                'order_status' => $status,
+                'web_para' => '20140318154002-xxx',
+            ], 'markFailed');
+        }
     }
 
-    public function test_cvs_mark_new()
-    {
-        $this->validate([
-            'suID' => '20140318154002',
-            'processID' => '20140318154002',
-            'stCate' => 'TFM',
-            'stCode' => '0038',
-            'rtURL' => 'http://yourdomain.domain/direct/program.php',
-            'webPara' => '20140318154002-xxx',
-        ], 'markNew');
-    }
-
-    public function test_cvs_mark_captured()
-    {
-        $this->validate([
-            'suID' => '20140318154002',
-            'processID' => '20140318154002',
-            'stCate' => 'TFM',
-            'stCode' => '0038',
-            'rtURL' => 'http://yourdomain.domain/direct/program.php',
-            'webPara' => '20140318154002-xxx',
-            // response
-            'stCate' => 'TFM',
-            'stCode' => '0038',
-            'stName' => '門市名稱',
-            'stAddr' => '門市地址',
-            'stTel' => '門市電話',
-        ], 'markCaptured');
-    }
-
-    public function test_get_transaction_data_mark_new()
-    {
-        $this->validate([
-            'su_id' => '20140318154002',
-            'sn_id' => '20140318154002',
-            'rtn_url' => 'http://yourdomain.domain/direct/program.php',
-            'web_para' => '20140318154002-xxx',
-        ], 'markNew');
-    }
-
-    public function test_get_transaction_data_mark_unknown()
+    public function testMarkUnknown()
     {
         foreach (['S01', 'S02', 'S03', 'S04', 'S05', 'S06'] as $status) {
             $this->validate([
@@ -170,46 +172,13 @@ class StatusActionTest extends PHPUnit_Framework_TestCase
         }
     }
 
-    public function test_get_transaction_data_mark_failed()
-    {
-        foreach (['E00', 'E01', 'E02', 'E03', 'E04', 'E99'] as $status) {
-            $this->validate([
-                'sn_id' => '20140318154002',
-                'order_status' => $status,
-                'web_para' => '20140318154002-xxx',
-            ], 'markFailed');
-        }
-    }
-
     protected function validate($input, $type)
     {
-        /*
-        |------------------------------------------------------------
-        | Arrange
-        |------------------------------------------------------------
-        */
-
-        $request = m::spy('Payum\Core\Request\GetStatusInterface');
-        $details = new ArrayObject($input);
-
-        /*
-        |------------------------------------------------------------
-        | Act
-        |------------------------------------------------------------
-        */
-
-        $request->shouldReceive('getModel')->andReturn($details);
-
         $action = new StatusAction();
+        $request = m::mock('Payum\Core\Request\GetStatusInterface');
+        $request->shouldReceive('getModel')->andReturn($details = new ArrayObject($input));
+        $request->shouldReceive($type)->once();
+
         $action->execute($request);
-
-        /*
-        |------------------------------------------------------------
-        | Assert
-        |------------------------------------------------------------
-        */
-
-        $request->shouldHaveReceived('getModel')->twice();
-        $request->shouldHaveReceived($type)->once();
     }
 }

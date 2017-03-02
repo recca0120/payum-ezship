@@ -1,49 +1,34 @@
 <?php
 
+namespace PayumTW\Ezship\Tests;
+
 use Mockery as m;
+use PHPUnit\Framework\TestCase;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use PayumTW\Ezship\EzshipGatewayFactory;
 
-class EzShipGatewayFactoryTest extends PHPUnit_Framework_TestCase
+class EzshipGatewayFactoryTest extends TestCase
 {
-    public function tearDown()
+    protected function tearDown()
     {
         m::close();
     }
 
-    public function test_create_config()
+    public function testCreateConfig()
     {
-        /*
-        |------------------------------------------------------------
-        | Arrange
-        |------------------------------------------------------------
-        */
-
-        $suId = 'foo.su_id';
-        $httpClient = m::spy('Payum\Core\HttpClientInterface');
-        $messageFactory = m::spy('Http\Message\MessageFactory');
-        /*
-        |------------------------------------------------------------
-        | Act
-        |------------------------------------------------------------
-        */
-
         $gateway = new EzshipGatewayFactory();
         $config = $gateway->createConfig([
-            'api' => false,
-            'su_id' => $suId,
-            'payum.http_client' => $httpClient,
-            'httplug.message_factory' => $messageFactory,
+            'payum.api' => false,
+            'payum.required_options' => [],
+            'payum.http_client' => $httpClient = m::mock('Payum\Core\HttpClientInterface'),
+            'httplug.message_factory' => $messageFactory = m::mock('Http\Message\MessageFactory'),
+            'payum.api' => false,
+            'su_id' => 'foo',
         ]);
-        $api = call_user_func($config['payum.api'], ArrayObject::ensureArrayObject($config));
 
-        /*
-        |------------------------------------------------------------
-        | Assert
-        |------------------------------------------------------------
-        */
-
-        $this->assertSame($suId, $config['su_id']);
-        $this->assertInstanceOf('PayumTW\Ezship\Api', $api);
+        $this->assertInstanceOf(
+            'PayumTW\Ezship\Api',
+            $config['payum.api'](ArrayObject::ensureArrayObject($config))
+        );
     }
 }
