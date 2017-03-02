@@ -5,8 +5,8 @@ namespace PayumTW\Ezship\Tests\Action;
 use Mockery as m;
 use Payum\Core\Request\Sync;
 use PHPUnit\Framework\TestCase;
-use Payum\Core\Bridge\Spl\ArrayObject;
 use PayumTW\Ezship\Action\SyncAction;
+use Payum\Core\Bridge\Spl\ArrayObject;
 
 class SyncActionTest extends TestCase
 {

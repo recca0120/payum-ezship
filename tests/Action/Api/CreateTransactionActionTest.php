@@ -20,7 +20,7 @@ class CreateTransactionActionTest extends TestCase
     {
         $action = new CreateTransactionAction();
         $request = new CreateTransaction(new ArrayObject([
-            'order_amount' => 100
+            'order_amount' => 100,
         ]));
 
         $action->setApi(
@@ -42,7 +42,7 @@ class CreateTransactionActionTest extends TestCase
     {
         $action = new CreateTransactionAction();
         $request = new CreateTransaction(new ArrayObject([
-            'order_amount' => 0
+            'order_amount' => 0,
         ]));
 
         $action->setApi(
