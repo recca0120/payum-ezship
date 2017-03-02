@@ -1,32 +1,30 @@
 <?php
 
+namespace PayumTW\Ezship\Tests\Action;
+
 use Mockery as m;
 use PayumTW\Ezship\Api;
+use PHPUnit\Framework\TestCase;
 
-class ApiTest extends PHPUnit_Framework_TestCase
+class ApiTest extends TestCase
 {
-    public function tearDown()
+    protected function tearDown()
     {
         m::close();
     }
 
-    public function test_create_cvs_map_trancation()
+    public function testCreateCvsMapTransaction()
     {
-        /*
-        |------------------------------------------------------------
-        | Arrange
-        |------------------------------------------------------------
-        */
+        $api = new Api(
+            $options = [
+                'su_id' => 'service@ezship.com.tw',
+                'method' => 'XML',
+            ],
+            $httpClient = m::mock('Payum\Core\HttpClientInterface'),
+            $messageFactory = m::mock('Http\Message\MessageFactory')
+        );
 
-        $httpClient = m::spy('Payum\Core\HttpClientInterface');
-        $messageFactory = m::spy('Http\Message\MessageFactory');
-
-        $options = [
-            'su_id' => 'service@ezship.com.tw',
-            'method' => 'XML',
-        ];
-
-        $order = [
+        $params = [
             'order_amount' => '',
             'process_id' => '20140318154002',
             'st_cate' => 'A01',
@@ -35,47 +33,28 @@ class ApiTest extends PHPUnit_Framework_TestCase
             'web_para' => '20140318154002-xxx',
         ];
 
-        /*
-        |------------------------------------------------------------
-        | Act
-        |------------------------------------------------------------
-        */
-
-        $api = new Api($options, $httpClient, $messageFactory);
-
-        /*
-        |------------------------------------------------------------
-        | Assert
-        |------------------------------------------------------------
-        */
-
         $this->assertSame([
-            'suID' => 'service@ezship.com.tw',
-            'processID' => '20140318154002',
-            'stCate' => 'A01',
-            'stCode' => '1',
-            'rtURL' => 'http://yourdomain.domain/direct/program.php',
-            'webPara' => '20140318154002-xxx',
-        ], $api->createCvsMapTransaction($order));
+            'suID' => $options['su_id'],
+            'processID' => $params['process_id'],
+            'stCate' => $params['st_cate'],
+            'stCode' => $params['st_code'],
+            'rtURL' => $params['rtn_url'],
+            'webPara' => $params['web_para'],
+        ], $api->createCvsMapTransaction($params));
     }
 
-    public function test_create_transaction_cvs_by_xml()
+    public function testCreateTransactionXML()
     {
-        /*
-        |------------------------------------------------------------
-        | Arrange
-        |------------------------------------------------------------
-        */
+        $api = new Api(
+            $options = [
+                'su_id' => 'service@ezship.com.tw',
+                'method' => 'XML',
+            ],
+            $httpClient = m::mock('Payum\Core\HttpClientInterface'),
+            $messageFactory = m::mock('Http\Message\MessageFactory')
+        );
 
-        $httpClient = m::spy('Payum\Core\HttpClientInterface');
-        $messageFactory = m::spy('Http\Message\MessageFactory');
-
-        $options = [
-            'su_id' => 'service@ezship.com.tw',
-            'method' => 'XML',
-        ];
-
-        $order = [
+        $params = [
             'order_id' => '20140318154002',
             'order_status' => 'A01',
             'order_type' => '1',
@@ -105,20 +84,6 @@ class ApiTest extends PHPUnit_Framework_TestCase
                 ],
             ],
         ];
-
-        /*
-        |------------------------------------------------------------
-        | Act
-        |------------------------------------------------------------
-        */
-
-        $api = new Api($options, $httpClient, $messageFactory);
-
-        /*
-        |------------------------------------------------------------
-        | Assert
-        |------------------------------------------------------------
-        */
 
         $this->assertSame([
             'web_map_xml' => preg_replace('/[\n\s]+/', '',
@@ -151,26 +116,21 @@ class ApiTest extends PHPUnit_Framework_TestCase
                     <prodSpec><![CDATA[水藍]]></prodSpec>
                   </Detail>
             </ORDER>'),
-        ], $api->createTransaction($order));
+        ], $api->createTransaction($params));
     }
 
-    public function test_create_transaction_home_by_xml()
+    public function testCreateTransactionHomeXML()
     {
-        /*
-        |------------------------------------------------------------
-        | Arrange
-        |------------------------------------------------------------
-        */
+        $api = new Api(
+            $options = [
+                'su_id' => 'service@ezship.com.tw',
+                'method' => 'XML',
+            ],
+            $httpClient = m::mock('Payum\Core\HttpClientInterface'),
+            $messageFactory = m::mock('Http\Message\MessageFactory')
+        );
 
-        $httpClient = m::spy('Payum\Core\HttpClientInterface');
-        $messageFactory = m::spy('Http\Message\MessageFactory');
-
-        $options = [
-            'su_id' => 'service@ezship.com.tw',
-            'method' => 'XML',
-        ];
-
-        $order = [
+        $params = [
             'order_id' => '20140318154002',
             'order_status' => 'A05',
             'order_type' => '1',
@@ -201,20 +161,6 @@ class ApiTest extends PHPUnit_Framework_TestCase
                 ],
             ],
         ];
-
-        /*
-        |------------------------------------------------------------
-        | Act
-        |------------------------------------------------------------
-        */
-
-        $api = new Api($options, $httpClient, $messageFactory);
-
-        /*
-        |------------------------------------------------------------
-        | Assert
-        |------------------------------------------------------------
-        */
 
         $this->assertSame([
             'web_map_xml' => preg_replace('/[\n\s]+/', '',
@@ -248,26 +194,21 @@ class ApiTest extends PHPUnit_Framework_TestCase
                       <prodSpec><![CDATA[水藍]]></prodSpec>
                    </Detail>
                 </ORDER>'),
-        ], $api->createTransaction($order));
+        ], $api->createTransaction($params));
     }
 
-    public function test_create_transaction_home_by_request()
+    public function testCreateTransactionRequest()
     {
-        /*
-        |------------------------------------------------------------
-        | Arrange
-        |------------------------------------------------------------
-        */
+        $api = new Api(
+            $options = [
+                'su_id' => 'service@ezship.com.tw',
+                'method' => 'HttpRequest',
+            ],
+            $httpClient = m::mock('Payum\Core\HttpClientInterface'),
+            $messageFactory = m::mock('Http\Message\MessageFactory')
+        );
 
-        $httpClient = m::spy('Payum\Core\HttpClientInterface');
-        $messageFactory = m::spy('Http\Message\MessageFactory');
-
-        $options = [
-            'su_id' => 'service@ezship.com.tw',
-            'method' => 'HttpRequest',
-        ];
-
-        $order = [
+        $params = [
             'order_id' => '20140318154002',
             'order_status' => 'A05',
             'order_type' => '1',
@@ -299,20 +240,6 @@ class ApiTest extends PHPUnit_Framework_TestCase
             ],
         ];
 
-        /*
-        |------------------------------------------------------------
-        | Act
-        |------------------------------------------------------------
-        */
-
-        $api = new Api($options, $httpClient, $messageFactory);
-
-        /*
-        |------------------------------------------------------------
-        | Assert
-        |------------------------------------------------------------
-        */
-
         $this->assertSame([
             'su_id' => 'service@ezship.com.tw',
             'order_id' => '20140318154002',
@@ -326,54 +253,28 @@ class ApiTest extends PHPUnit_Framework_TestCase
             'rv_zip' => '106',
             'rtn_url' => 'http://yourdomain.domain/direct/program.php',
             'web_para' => '20140318154002-xxx',
-        ], $api->createTransaction($order));
+        ], $api->createTransaction($params));
     }
 
-    public function test_get_transaction_data()
+    public function testGetTransactionData()
     {
-        /*
-        |------------------------------------------------------------
-        | Arrange
-        |------------------------------------------------------------
-        */
+        $api = new Api(
+            $options = [
+                'su_id' => 'service@ezship.com.tw',
+                'method' => 'HttpRequest',
+            ],
+            $httpClient = m::mock('Payum\Core\HttpClientInterface'),
+            $messageFactory = m::mock('Http\Message\MessageFactory')
+        );
 
-        $httpClient = m::spy('Payum\Core\HttpClientInterface');
-        $messageFactory = m::spy('Http\Message\MessageFactory');
-
-        $su_id = 'foo.su_id';
-        $snID = uniqid();
-
-        $options = [
-            'su_id' => $su_id,
-        ];
-
-        $response = [
-            'su_id' => $su_id,
-            'sn_id' => $snID,
+        $params = [
+            'sn_id' => uniqid(),
             'rtn_url' => 'http://yourdomain.domain/direct/program.php',
             'web_para' => '20140318154002-xxx',
         ];
 
-        $details = [
-            'sn_id' => $snID,
-            'rtn_url' => 'http://yourdomain.domain/direct/program.php',
-            'web_para' => '20140318154002-xxx',
-        ];
-
-        /*
-        |------------------------------------------------------------
-        | Act
-        |------------------------------------------------------------
-        */
-
-        $api = new Api($options, $httpClient, $messageFactory);
-
-        /*
-        |------------------------------------------------------------
-        | Assert
-        |------------------------------------------------------------
-        */
-
-        $this->assertSame($response, $api->getTransactionData($details));
+        $this->assertSame(array_merge([
+            'su_id' => $options['su_id'],
+        ], $params), $api->getTransactionData($params));
     }
 }

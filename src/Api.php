@@ -251,7 +251,7 @@ class Api
      *
      * @return bool
      */
-    public function verifyHash(array $params, $details)
+    public function verifyHash($params, $details)
     {
         $webPara = isset($params['web_para']) === true ? $params['web_para'] : $params['webPara'];
 

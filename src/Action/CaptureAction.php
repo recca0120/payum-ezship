@@ -33,7 +33,7 @@ class CaptureAction extends BaseApiAwareAction implements ActionInterface, Gatew
         if (isset($httpRequest->request['order_status']) === true ||
             isset($httpRequest->request['processID']) === true // CVS
         ) {
-            if ($this->api->verifyHash($httpRequest->request, $details) === false) {
+            if ($this->api->verifyHash($httpRequest->request, (array) $details) === false) {
                 $httpRequest->request['order_status'] = 'E99';
             }
             $details->replace($httpRequest->request);
@@ -47,8 +47,6 @@ class CaptureAction extends BaseApiAwareAction implements ActionInterface, Gatew
         if (empty($details['rtn_url']) === true) {
             $details['rtn_url'] = $targetUrl;
         }
-
-        $details['web_para'] = uniqid();
 
         $this->gateway->execute(new CreateTransaction($details));
     }
