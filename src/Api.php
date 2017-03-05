@@ -84,7 +84,6 @@ class Api
      * createCvsMapTransaction.
      *
      * @param array $params
-     *
      * @return array
      */
     public function createCvsMapTransaction(array $params)
@@ -116,7 +115,6 @@ class Api
      * createTransaction.
      *
      * @param array $params
-     *
      * @return array
      */
     public function createTransaction(array $params)
@@ -201,7 +199,6 @@ class Api
      * getTransactionData.
      *
      * @param mixed $params
-     *
      * @return array
      */
     public function getTransactionData(array $params)
@@ -215,24 +212,22 @@ class Api
             'rtn_url' => null,
             // varchar 100 網站所需額外判別資料 由開通網站自行提供，ezShip 將原值回傳。
             'web_para' => uniqid(),
-            // // varchar 10 店到店編號 訂單成立後，ezShip回傳給網站的店到店編號
-            // 'sn_id' => null,
-            // // varchar 3 訂單狀態
-            // // S01 尚未寄件或尚未收到超商總公司提供的寄件訊息
-            // // S02 運往取件門市途中
-            // // S03 已送達取件門市
-            // // S04 已完成取貨
-            // // S05 退貨 (包含：已退回物流中心 / 再寄一次給取件人 / 退回給寄件人)
-            // // S06 配送異常 (包含：刪單 / 門市閉店 / 貨故)
-            // // E00 參數傳遞內容有誤或欄位短缺
-            // // E01 <su_id>帳號不存在
-            // // E02 <su_id>帳號無網站串接權限
-            // // E03 <sn_id>店到店編號有誤
-            // // E04 <su_id>帳號與<sn_id>店到店編號無法對應
-            // // E99 系統錯誤
+            /**
+             * varchar 3 訂單狀態
+             * S01 尚未寄件或尚未收到超商總公司提供的寄件訊息
+             * S02 運往取件門市途中
+             * S03 已送達取件門市
+             * S04 已完成取貨
+             * S05 退貨 (包含：已退回物流中心 / 再寄一次給取件人 / 退回給寄件人)
+             * S06 配送異常 (包含：刪單 / 門市閉店 / 貨故)
+             * E00 參數傳遞內容有誤或欄位短缺
+             * E01 <su_id>帳號不存在
+             * E02 <su_id>帳號無網站串接權限
+             * E03 <sn_id>店到店編號有誤
+             * E04 <su_id>帳號與<sn_id>店到店編號無法對應
+             * E99 系統錯誤
+             */
             // 'order_status' => null,
-            // // varchar 100 網站所需額外判別資料 ezShip 將原值回傳，供網站判別用
-            // 'web_para' => null
         ];
 
         $params = array_filter(array_replace(
@@ -248,7 +243,6 @@ class Api
      *
      * @param array $params
      * @param array $details
-     *
      * @return bool
      */
     public function verifyHash($params, $details)
@@ -263,7 +257,6 @@ class Api
      *
      * @param array $array
      * @param bool $flip
-     *
      * @return array
      */
     protected function keyMap($array, $flip = false)
@@ -287,7 +280,6 @@ class Api
      *
      * @param array $array
      * @param array $cdataSections
-     *
      * @return string
      */
     protected function createXml($array, $cdataSections = [])
