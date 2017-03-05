@@ -8,6 +8,8 @@
 [![License](https://poser.pugx.org/payum-tw/ezship/license.svg)](https://packagist.org/packages/payum-tw/ezship)
 [![Monthly Downloads](https://poser.pugx.org/payum-tw/ezship/d/monthly)](https://packagist.org/packages/payum-tw/ezship)
 [![Daily Downloads](https://poser.pugx.org/payum-tw/ezship/d/daily)](https://packagist.org/packages/payum-tw/ezship)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/recca0120/payum-ezship/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/recca0120/payum-ezship/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/recca0120/payum-ezship/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/recca0120/payum-ezship/?branch=master)
 
 The Payum extension to rapidly build new extensions.
 

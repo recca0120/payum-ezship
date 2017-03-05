@@ -50,9 +50,9 @@ class Api
     protected $options = [];
 
     /**
-     * @param array               $options
+     * @param array $options
      * @param HttpClientInterface $client
-     * @param MessageFactory      $messageFactory
+     * @param MessageFactory $messageFactory
      *
      * @throws \Payum\Core\Exception\InvalidArgumentException if an option is invalid
      */
@@ -83,7 +83,7 @@ class Api
     /**
      * createCvsMapTransaction.
      *
-     * @param  array  $params
+     * @param array $params
      *
      * @return array
      */
@@ -246,8 +246,8 @@ class Api
     /**
      * verifyHash.
      *
-     * @param  array $params
-     * @param  array $details
+     * @param array $params
+     * @param array $details
      *
      * @return bool
      */
@@ -261,8 +261,8 @@ class Api
     /**
      * keyMap.
      *
-     * @param  array  $array
-     * @param  bool $flip
+     * @param array $array
+     * @param bool $flip
      *
      * @return array
      */
@@ -285,8 +285,8 @@ class Api
     /**
      * createXml.
      *
-     * @param  array $array
-     * @param  array $cdataSections
+     * @param array $array
+     * @param array $cdataSections
      *
      * @return string
      */
