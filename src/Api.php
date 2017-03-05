@@ -148,13 +148,17 @@ class Api
             'order_status' => $orderStatus,
             // varchar 1 訂單類別 1 取貨付款 3 取貨不付款
             'order_type' => '3',
-            // 代收金額或訂單金額
-            // 若<orderType>=1，為代收金額 10~6,000
-            // 若<orderType>=3，為訂單金額 0~2,000
+            /*
+             * 代收金額或訂單金額
+             * 若<orderType>=1，為代收金額 10~6,000
+             * 若<orderType>=3，為訂單金額 0~2,000
+             */
             'order_amount' => null,
-            // varchar 60 取件人姓名
-            // 若<orderType>=1，建議為取件人身分證件上之真實姓名
-            // 若<orderType>=3，須為取件人身分證件上之真實姓名
+            /*
+             * varchar 60 取件人姓名
+             * 若<orderType>=1，建議為取件人身分證件上之真實姓名
+             * 若<orderType>=3，須為取件人身分證件上之真實姓名
+             */
             'rv_name' => null,
             // varchar 100 取件人電子郵件 發送取件通知信函
             'rv_email' => null,
