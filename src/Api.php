@@ -35,12 +35,12 @@ class Api
     ];
 
     /**
-     * @var HttpClientInterface
+     * @var \Payum\Core\HttpClientInterface
      */
     protected $client;
 
     /**
-     * @var MessageFactory
+     * @var \Http\Message\MessageFactory
      */
     protected $messageFactory;
 
@@ -51,8 +51,8 @@ class Api
 
     /**
      * @param array $options
-     * @param HttpClientInterface $client
-     * @param MessageFactory $messageFactory
+     * @param \Payum\Core\HttpClientInterface $client
+     * @param \Http\Message\MessageFactory $messageFactory
      *
      * @throws \Payum\Core\Exception\InvalidArgumentException if an option is invalid
      */
@@ -135,13 +135,16 @@ class Api
             'su_id' => $this->options['su_id'],
             // varchar 10 訂單編號
             'order_id' => null,
-            // varchar 3 訂單狀態
-            // A01 超商取貨新訂單，不需在ezShip上確認訂單，可直接印單 (回覆snID)
-            // A02 超商取貨新訂單，需在ezShip上確認訂單，確認後才可進行印單 (預設值, 回覆snID)
-            // A03 超商取貨新訂單，使用 輕鬆袋或迷你袋 (不回覆snID，不需在ezShip上確認訂單，需登錄編號)
-            // A04 超商取貨新訂單，使用 輕鬆袋或迷你袋 (不回覆snID，需在ezShip上確認訂單，需登錄編號)
-            // A05 宅配新訂單，不需在ezShip上確認訂單，可直接印單 (回覆snID，10碼數字)
-            // A06 宅配新訂單，需在ezShip上確認訂單，確認後才可進行印單 (回覆snID，10碼數字)
+            /*
+             * varchar 3 訂單狀態
+             * A01 超商取貨新訂單，不需在ezShip上確認訂單，可直接印單 (回覆snID)
+             * A02 超商取貨新訂單，需在ezShip上確認訂單，確認後才可進行印單 (預設值, 回覆snID)
+             * A03 超商取貨新訂單，使用 輕鬆袋或迷你袋 (不回覆snID，不需在ezShip上確認訂單，需登錄編號)
+             * A04 超商取貨新訂單，使用 輕鬆袋或迷你袋 (不回覆snID，需在ezShip上確認訂單，需登錄編號)
+             * A05 宅配新訂單，不需在ezShip上確認訂單，可直接印單 (回覆snID，10碼數字)
+             * A06 宅配新訂單，需在ezShip上確認訂單，確認後才可進行印單 (回覆snID，10碼數字)
+             */
+
             'order_status' => $orderStatus,
             // varchar 1 訂單類別 1 取貨付款 3 取貨不付款
             'order_type' => '3',
@@ -212,7 +215,7 @@ class Api
             'rtn_url' => null,
             // varchar 100 網站所需額外判別資料 由開通網站自行提供，ezShip 將原值回傳。
             'web_para' => uniqid(),
-            /**
+            /*
              * varchar 3 訂單狀態
              * S01 尚未寄件或尚未收到超商總公司提供的寄件訊息
              * S02 運往取件門市途中
@@ -227,7 +230,6 @@ class Api
              * E04 <su_id>帳號與<sn_id>店到店編號無法對應
              * E99 系統錯誤
              */
-            // 'order_status' => null,
         ];
 
         $params = array_filter(array_replace(
